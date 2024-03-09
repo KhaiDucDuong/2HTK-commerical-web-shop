@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunke_commerce_template=self.webpackChunke_commerce_template||[]).push([[8285],{8285:(e,s,a)=>{a.r(s),a.d(s,{default:()=>m});var c=a(5043),l=a(579);const t=(0,c.lazy)((()=>a.e(9081).then(a.bind(a,9081)))),m=e=>(0,l.jsxs)("div",{className:"p-4 mb-3 bg-light rounded ".concat(e.className?e.className:""),children:[(0,l.jsx)("h4",{className:"fst-italic",children:e.title}),(0,l.jsx)(t,{className:"mb-2"}),(0,l.jsx)("p",{className:"mb-0",children:"Tien gie dep trai"})]})}}]);
+//# sourceMappingURL=8285.0337ee36.chunk.js.map
