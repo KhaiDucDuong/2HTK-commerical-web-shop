@@ -1,5 +1,4 @@
 {
-  "homepage": "http://khaiducduong.github.io/2HTK-commerical-web-shop",
   "name": "e-commerce-template",
   "version": "1.0.0",
   "private": true,
@@ -28,8 +27,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
+    "predeploy": "npm run build && cp build/index.html build/404.html && cp CNAME build/",
+    "deploy": "surge build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -49,7 +48,6 @@
     ]
   },
   "devDependencies": {
-    "gh-pages": "^6.1.1",
     "surge": "^0.23.1"
   }
 }
