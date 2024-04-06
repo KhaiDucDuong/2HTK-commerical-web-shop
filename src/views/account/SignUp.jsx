@@ -1,10 +1,22 @@
-import { lazy } from "react";
+import { lazy, useState } from "react";
 import { Link } from "react-router-dom";
+import { fetchApi } from "../../hooks/useFetch"
 const SignUpForm = lazy(() => import("../../components/account/SignUpForm"));
 
 const SignUpView = () => {
+  const [responseData, setResponseData] = useState(null)
   const onSubmit = async (values) => {
-    alert(JSON.stringify(values));
+    console.log(values.firstName)
+    const jsonData = JSON.stringify({
+      fullName: values.firstName + " " + values.lastName,
+      username: values.username,
+      password: values.password
+    })
+    console.log(jsonData)
+    const data = fetchApi(process.env.REACT_APP_SHOP_LOGIN_API,
+              "POST",
+              jsonData)
+    setResponseData(data)
   };
   return (
     <div className="container my-3">
