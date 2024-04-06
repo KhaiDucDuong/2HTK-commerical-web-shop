@@ -12,7 +12,7 @@ import {
   digit,
   name,
 } from "../../helpers/validation";
-import { ReactComponent as IconPhone } from "bootstrap-icons/icons/phone.svg";
+import { ReactComponent as IconPerson } from "bootstrap-icons/icons/person.svg";
 import { ReactComponent as IconShieldLock } from "bootstrap-icons/icons/shield-lock.svg";
 
 const SignUpForm = (props) => {
@@ -31,7 +31,7 @@ const SignUpForm = (props) => {
             label="First Name"
             component={renderFormField}
             placeholder="First Name"
-            validate={[required, name]}
+            validate={[required]}
             required={true}
           />
         </div>
@@ -42,22 +42,21 @@ const SignUpForm = (props) => {
             label="Last Name"
             component={renderFormField}
             placeholder="Last Name"
-            validate={[required, name]}
+            validate={[required]}
             required={true}
           />
         </div>
       </div>
       <Field
-        name="mobileNo"
-        type="number"
-        label="Mobile no"
+        name="username"
+        type="text"
+        label="Your username"
         component={renderFormGroupField}
-        placeholder="Mobile no without country code"
-        icon={IconPhone}
-        validate={[required, maxLengthMobileNo, minLengthMobileNo, digit]}
+        placeholder="Username"
+        icon={IconPerson}
+        validate={[required, minLength8]}
+        minLength="8"
         required={true}
-        max="999999999999999"
-        min="9999"
         className="mb-3"
       />
       <Field
