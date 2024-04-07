@@ -1,17 +1,23 @@
-export async function fetchApi(url, requestMethod="GET", jsonData, credential=false, contentType='application/json') {
-    const requestOptions = {
-        method: requestMethod,
-        headers: { "Content-Type": contentType },
-        body: jsonData
-    }
+export async function fetchApi(
+  url,
+  requestMethod = "GET",
+  jsonData,
+  credential = false,
+  contentType = "application/json"
+) {
+  const requestOptions = {
+    method: requestMethod,
+    headers: {
+      "Content-Type": contentType,
+      "credentials": credential ? "include" : "same-origin",
+    },
+    body: jsonData,
+  };
 
-    try {
-        console.log(requestOptions)
-        let response = await fetch(url, requestOptions)
-        let data = response.json();
-        console.log(data)
-        return data
-    } catch (e) {
-        console.log("error: ", e)
-    }
+  try {
+    let response = await fetch(url, requestOptions);
+    return response
+  } catch (e) {
+    console.log("error: ", e);
+  }
 }
