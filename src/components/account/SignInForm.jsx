@@ -6,16 +6,13 @@ import renderFormGroupField from "../../helpers/renderFormGroupField";
 import {
   required,
   maxLength20,
-  minLength8,
-  maxLengthMobileNo,
-  minLengthMobileNo,
-  digit,
+  minLength8
 } from "../../helpers/validation";
-import { ReactComponent as IconPhone } from "bootstrap-icons/icons/phone.svg";
+import { ReactComponent as IconPerson } from "bootstrap-icons/icons/person.svg";
 import { ReactComponent as IconShieldLock } from "bootstrap-icons/icons/shield-lock.svg";
 
 const SignInForm = (props) => {
-  const { handleSubmit, submitting, onSubmit, submitFailed } = props;
+  const { handleSubmit, submitting, onSubmit, submitFailed, loginFail } = props;
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -23,16 +20,15 @@ const SignInForm = (props) => {
       noValidate
     >
       <Field
-        name="mobileNo"
-        type="number"
-        label="Mobile no"
+        name="username"
+        type="text"
+        label="Your username"
         component={renderFormGroupField}
-        placeholder="Mobile no without country code"
-        icon={IconPhone}
-        validate={[required, maxLengthMobileNo, minLengthMobileNo, digit]}
+        placeholder="Username"
+        icon={IconPerson}
+        validate={[required, minLength8]}
         required={true}
-        max="999999999999999"
-        min="9999"
+        minLength="8"
         className="mb-3"
       />
       <Field
@@ -48,6 +44,7 @@ const SignInForm = (props) => {
         minLength="8"
         className="mb-3"
       />
+      {loginFail && <p className="text-danger">Username or password is incorrect!</p>}
       <div className="d-grid">
         <button
           type="submit"

@@ -12,8 +12,7 @@ const SignUpView = () => {
       username: values.username,
       password: values.password
     })
-    console.log(jsonData)
-    const data = fetchApi(process.env.REACT_APP_SHOP_LOGIN_API,
+    const data = await fetchApi(process.env.REACT_APP_SHOP_REGISTER_API,
               "POST",
               jsonData)
     setResponseData(data)
