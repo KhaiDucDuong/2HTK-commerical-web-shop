@@ -54,8 +54,7 @@ const SignUpForm = (props) => {
         component={renderFormGroupField}
         placeholder="Username"
         icon={IconPerson}
-        validate={[required, minLength8]}
-        minLength="8"
+        validate={[required]}
         required={true}
         className="mb-3"
       />
