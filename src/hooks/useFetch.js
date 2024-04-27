@@ -16,7 +16,8 @@ export async function fetchApi(
 
   try {
     let response = await fetch(url, requestOptions);
-    return response
+    let data = await response.json()
+    return data
   } catch (e) {
     console.log("error: ", e);
   }

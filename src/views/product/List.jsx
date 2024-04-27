@@ -1,5 +1,7 @@
-import React, { lazy, Component } from "react";
-import { data } from "../../data";
+import React, { lazy, Component, useState } from "react";
+import { useEffect } from "react";
+import {fetchApi} from "../../hooks/useFetch";
+import {AllProducts} from "../../hooks/productApi"
 const Paging = lazy(() => import("../../components/Paging"));
 const Breadcrumb = lazy(() => import("../../components/Breadcrumb"));
 const FilterCategory = lazy(() => import("../../components/filter/Category"));
@@ -17,45 +19,12 @@ const CardProductList = lazy(() =>
   import("../../components/card/CardProductList")
 );
 
-class ProductListView extends Component {
-  state = {
-    currentProducts: [],
-    currentPage: null,
-    totalPages: null,
-    totalItems: 0,
-    view: "list",
-  };
 
-  UNSAFE_componentWillMount() {
-    const totalItems = this.getProducts().length;
-    this.setState({ totalItems });
-  }
 
-  onPageChanged = (page) => {
-    let products = this.getProducts();
-    const { currentPage, totalPages, pageLimit } = page;
-    const offset = (currentPage - 1) * pageLimit;
-    const currentProducts = products.slice(offset, offset + pageLimit);
-    this.setState({ currentPage, currentProducts, totalPages });
-  };
-
-  onChangeView = (view) => {
-    this.setState({ view });
-  };
-
-  getProducts = () => {
-    let products = data.products;
-    products = products.concat(products);
-    products = products.concat(products);
-    products = products.concat(products);
-    products = products.concat(products);
-    products = products.concat(products);
-    return products;
-  };
-
-  render() {
+function ProductListView() {
+   const productList = AllProducts()
     return (
-      <React.Fragment>
+      <>
         <div
           className="p-5 bg-primary bs-cover"
           style={{
@@ -64,7 +33,7 @@ class ProductListView extends Component {
         >
           <div className="container text-center">
             <span className="display-5 px-3 bg-white rounded shadow">
-              T-Shirts
+            All products
             </span>
           </div>
         </div>
@@ -85,8 +54,8 @@ class ProductListView extends Component {
               <div className="row">
                 <div className="col-7">
                   <span className="align-middle fw-bold">
-                    {this.state.totalItems} results for{" "}
-                    <span className="text-warning">"t-shirts"</span>
+                    {/* {this.state.totalItems} results for{" "} */}
+                    <span className="text-warning">Result found: {productList.length}</span>
                   </span>
                 </div>
                 <div className="col-5 d-flex justify-content-end">
@@ -100,7 +69,7 @@ class ProductListView extends Component {
                     <option value={4}>Price low to high</option>
                     <option value={4}>Price high to low</option>
                   </select>
-                  <div className="btn-group ms-3" role="group">
+                  {/* <div className="btn-group ms-3" role="group">
                     <button
                       aria-label="Grid"
                       type="button"
@@ -125,21 +94,19 @@ class ProductListView extends Component {
                     >
                       <i className="bi bi-list" />
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <hr />
               <div className="row g-3">
-                {this.state.view === "grid" &&
-                  this.state.currentProducts.map((product, idx) => {
+                {/* {productList.map((product, idx) => {
                     return (
                       <div key={idx} className="col-md-4">
                         <CardProductGrid data={product} />
                       </div>
                     );
-                  })}
-                {this.state.view === "list" &&
-                  this.state.currentProducts.map((product, idx) => {
+                  })} */}
+                {productList.map((product, idx) => {
                     return (
                       <div key={idx} className="col-md-12">
                         <CardProductList data={product} />
@@ -148,20 +115,20 @@ class ProductListView extends Component {
                   })}
               </div>
               <hr />
-              <Paging
+              
+              {/* <Paging
                 totalRecords={this.state.totalItems}
                 pageLimit={9}
                 pageNeighbours={3}
                 onPageChanged={this.onPageChanged}
                 sizing=""
                 alignment="justify-content-center"
-              />
+              /> */}
             </div>
           </div>
         </div>
-      </React.Fragment>
+        </>
     );
   }
-}
 
 export default ProductListView;
