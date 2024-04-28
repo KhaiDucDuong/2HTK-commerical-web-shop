@@ -1,20 +1,22 @@
-import  { useState, useEffect } from 'react'
+async function fetchData(url) {
+    try {
+        let response = await fetch(url, { method: 'GET' });
+        let data = await response.json();
+        return data;
+    } catch (error) {
+        console.log("error", error);
+        return [];
+    }
+}
 
-export function AllProducts(){
+export async function AllProducts() {
     let url = `http://localhost:8080/products/category`;
-    let [productList, setProductList] = useState([]);
-  useEffect(() => {
-    let fetchData = async () => {
-        try {
-            let response = await fetch(url, {method: 'GET' });
-            let data = await response.json();
-            setProductList(data);
-        } catch (error) {
-            console.log("error", error);
-        }
-    };
+    const productList = await fetchData(url);
+    return productList;
+}
 
-    fetchData();
-}, []);
-return productList;
+export async function findProducts(name) {
+    let url = `http://localhost:8080/products/category?search=` + name;
+    const productList = await fetchData(url);
+    return productList;
 }

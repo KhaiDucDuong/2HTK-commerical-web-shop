@@ -1,6 +1,6 @@
 const Search = () => {
   return (
-    <form action="#" className="search">
+    <form action="/category" className="search">
       <div className="input-group">
         <input
           id="search"

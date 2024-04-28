@@ -2,6 +2,7 @@ import React, { lazy, Component, useState } from "react";
 import { useEffect } from "react";
 import {fetchApi} from "../../hooks/useFetch";
 import {AllProducts} from "../../hooks/productApi"
+import {findProducts} from "../../hooks/productApi"
 const Paging = lazy(() => import("../../components/Paging"));
 const Breadcrumb = lazy(() => import("../../components/Breadcrumb"));
 const FilterCategory = lazy(() => import("../../components/filter/Category"));
@@ -22,7 +23,25 @@ const CardProductList = lazy(() =>
 
 
 function ProductListView() {
-   const productList = AllProducts()
+  const [productList, setProductList] = useState([]);
+  let queryParameters = new URLSearchParams(window.location.search)
+  let productName = queryParameters.get("search")
+  useEffect(() => {
+      const fetchDataAll = async () => {
+          const products = await AllProducts();
+          setProductList(products);
+      };
+      const fetchDataName = async (name) => {
+          const products = await findProducts(name);
+          setProductList(products);
+      }
+      if (productName == null){
+      fetchDataAll();
+      }
+      else {
+        fetchDataName(productName)
+      }
+  }, []);
     return (
       <>
         <div
