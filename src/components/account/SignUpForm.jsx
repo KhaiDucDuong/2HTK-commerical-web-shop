@@ -16,7 +16,7 @@ import { ReactComponent as IconPerson } from "bootstrap-icons/icons/person.svg";
 import { ReactComponent as IconShieldLock } from "bootstrap-icons/icons/shield-lock.svg";
 
 const SignUpForm = (props) => {
-  const { handleSubmit, submitting, onSubmit, submitFailed } = props;
+  const { handleSubmit, submitting, onSubmit, submitFailed, signUpFail, signUpSuccess } = props;
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -71,6 +71,8 @@ const SignUpForm = (props) => {
         minLength="8"
         className="mb-3"
       />
+      {signUpFail && <p className="text-danger">Username has already existed! Please choose a different username.</p>}
+      {signUpSuccess && <p className="text-success">Account created succesfully! Go to sign in page to log in.</p>}
       <div className="d-grid">
         <button
           type="submit"

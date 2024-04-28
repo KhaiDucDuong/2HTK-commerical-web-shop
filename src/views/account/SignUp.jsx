@@ -5,6 +5,8 @@ const SignUpForm = lazy(() => import("../../components/account/SignUpForm"));
 
 const SignUpView = () => {
   const [responseData, setResponseData] = useState(null)
+  const [signUpFail, setSignUpFail] = useState(false)
+  const [signUpSuccess, setSignUpSuccess] = useState(false)
   const onSubmit = async (values) => {
     console.log(values.firstName)
     const jsonData = JSON.stringify({
@@ -12,10 +14,21 @@ const SignUpView = () => {
       username: values.username,
       password: values.password
     })
-    const data = await fetchApi(process.env.REACT_APP_SHOP_REGISTER_API,
+    const response = await fetchApi(process.env.REACT_APP_SHOP_REGISTER_API,
               "POST",
               jsonData)
-    setResponseData(data)
+
+    const data = await response.json()
+    //console.log(data)
+    if (data.status === 9999) {
+      setResponseData(data)
+      setSignUpSuccess(true)
+      setSignUpFail(false)
+    }
+    else{
+      setSignUpFail(true)
+      setSignUpSuccess(false)
+    }
   };
   return (
     <div className="container my-3">
@@ -38,7 +51,7 @@ const SignUpView = () => {
         </div>
         <div className="col-md-6 p-3">
           <h4 className="text-center">Sign Up</h4>
-          <SignUpForm onSubmit={onSubmit} />
+          <SignUpForm onSubmit={onSubmit} signUpFail={signUpFail} signUpSuccess={signUpSuccess} />
         </div>
       </div>
     </div>

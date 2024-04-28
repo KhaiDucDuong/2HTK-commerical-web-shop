@@ -17,7 +17,8 @@ const SignInView = ({setUser}) => {
               jsonData)
   
     if (response.status === 200) {
-      const data = response.json()
+      const data = await response.json()
+      //console.log(data)
       localStorage.setItem("user", JSON.stringify(data));
       setUser(data)
       navigate("/");
