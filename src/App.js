@@ -75,7 +75,7 @@ function App() {
                 path="/account/profile"
                 element={<MyProfileView />}
               />
-              <Route exact path="/account/shop" element={<MyShopView />} />
+              <Route exact path="/account/shop" element={<MyShopView userData={user}/>} />
               <Route exact path="/account/orders" element={<OrdersView />} />
               <Route
                 exact
