@@ -19,6 +19,7 @@ const OrdersView = lazy(() => import("./views/account/Orders"));
 const WishlistView = lazy(() => import("./views/account/Wishlist"));
 const NotificationView = lazy(() => import("./views/account/Notification"));
 const MyProfileView = lazy(() => import("./views/account/MyProfile"));
+const SellerApplication = lazy(() => import("./views/account/SellerApplication"));
 const MyShopView = lazy(() => import("./views/shop/MyShop"));
 const ProductListView = lazy(() => import("./views/product/List"));
 const ProductDetailView = lazy(() => import("./views/product/Detail"));
@@ -41,6 +42,7 @@ function App() {
     const loggedInUser = localStorage.getItem("user");
     if (loggedInUser) {
       const foundUser = JSON.parse(loggedInUser);
+      console.log(foundUser)
       setUser(foundUser);
     }
     setIsLoading(false)
@@ -87,6 +89,7 @@ function App() {
                 path="/account/notification"
                 element={<NotificationView />}
               />
+              <Route exact path="/account/seller-application" element={<SellerApplication userData={user} />} />
               <Route exact path="/category" element={<ProductListView />} />
               <Route
                 exact

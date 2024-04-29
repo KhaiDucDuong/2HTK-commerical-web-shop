@@ -7,6 +7,7 @@ const Header = ({ user, setUser }) => {
   function handleLogout() {
     setUser(null);
     localStorage.removeItem("user");
+    navigate("/")
     window.location.reload();
   }
 
@@ -53,6 +54,11 @@ const Header = ({ user, setUser }) => {
                     <li>
                       <Link className="dropdown-item" to="/account/shop">
                         <i className="bi bi-shop"></i> My Shop
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/account/seller-application">
+                        <i className="bi bi-briefcase"></i> Seller Application
                       </Link>
                     </li>
                     <li>
