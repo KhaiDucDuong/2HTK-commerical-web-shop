@@ -15,9 +15,10 @@ import {
   digit,
   email,
   maxLength1000,
+  maxLength200,
+  tickRequired,
 } from "../../helpers/validation";
 import { ReactComponent as IconPerson } from "bootstrap-icons/icons/person.svg";
-import { ReactComponent as IconBuilding } from "bootstrap-icons/icons/building.svg";
 import { ReactComponent as IconPhone } from "bootstrap-icons/icons/phone.svg";
 import { ReactComponent as IconEnvelope } from "bootstrap-icons/icons/envelope.svg";
 
@@ -29,6 +30,12 @@ const SellerAplicationForm = (props) => {
       className={`needs-validation ${submitFailed ? "was-validated" : ""}`}
       noValidate
     >
+      <h6 className="text-info">
+        Note: update this component to fetch user's information and set the
+        default value for phone and email inputs, if the user hasn't set these
+        values then provide a warning telling the user to update their phone and
+        email.
+      </h6>
       <div className="row">
         <div className="col-md-6">
           <Field
@@ -41,20 +48,6 @@ const SellerAplicationForm = (props) => {
             required={true}
             validate={[required, maxLength50, name]}
             pattern="[a-zA-Z\s]*"
-            maxLength="50"
-            className="mb-3"
-          />
-        </div>
-        <div className="col-md-6">
-          <Field
-            name="company"
-            type="text"
-            label="Company"
-            component={renderFormGroupField}
-            placeholder="Your company name"
-            icon={IconBuilding}
-            required={true}
-            validate={[required, maxLength50]}
             maxLength="50"
             className="mb-3"
           />
@@ -77,6 +70,7 @@ const SellerAplicationForm = (props) => {
             className="mb-3"
           />
         </div>
+
         <div className="col-md-6">
           <Field
             name="email"
@@ -92,23 +86,38 @@ const SellerAplicationForm = (props) => {
           />
         </div>
       </div>
+
       <div className="row g-3">
         <div className="col-md-12">
           <Field
-            name="message"
-            label="Message"
+            name="applyingReason"
+            label="Applaying Reason"
+            maxLength="200"
+            component={renderFormTextArea}
+            validate={maxLength200}
+            placeholder="Briefly describe your business (200 words max)."
+          />
+        </div>
+
+        <div className="col-md-12">
+          <Field
+            name="businessPlanDescription"
+            label="Detailed Business Plan"
             maxLength="1000"
             component={renderFormTextArea}
             validate={maxLength1000}
-            placeholder="What you are looking for?"
+            placeholder="Explain your business plan in details (1000 words max)."
           />
         </div>
+
         <div className="col-md-12">
           <Field
             id="informed"
-            label="Keep me informed via email or phone about its Products and Services."
+            label="I agree with the terms and conditions of the shop's seller policy."
             name="informed"
             component={renderFormCheckbox}
+            validate={tickRequired}
+            required
           />
         </div>
       </div>
@@ -126,7 +135,7 @@ const SellerAplicationForm = (props) => {
 };
 
 export default compose(
-    reduxForm({
-      form: "SellerApplicationForm",
-    })
-  )(SellerAplicationForm);
+  reduxForm({
+    form: "SellerApplicationForm",
+  })
+)(SellerAplicationForm);

@@ -2,6 +2,7 @@ export const required = (value) =>
   value || (typeof value == "number" && value === 0)
     ? undefined
     : "This field is required";
+export const tickRequired = (value) => value===true ? undefined : "This is required"
 export const number = (value) =>
   value && isNaN(Number(value)) ? "Must be a number" : undefined;
 export const digit = (value) =>
@@ -13,6 +14,7 @@ export const maxLengthMobileNo = maxLength(15);
 export const maxLength20 = maxLength(20);
 export const maxLength50 = maxLength(50);
 export const maxLength150 = maxLength(150);
+export const maxLength200 = maxLength(200);
 export const maxLength500 = maxLength(500);
 export const maxLength1000 = maxLength(1000);
 export const maxLength800 = maxLength(800);
