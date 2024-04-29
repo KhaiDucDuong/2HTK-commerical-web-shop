@@ -4,10 +4,14 @@ const renderFormTextArea = (props) => {
     input,
     label,
     placeholder,
+    rows,
     tips,
     required,
     meta: { touched, error, warning },
   } = props;
+  let nRows = 1;
+  if (rows != null)
+    nRows = rows;
   return (
     <React.Fragment>
       <label
@@ -22,6 +26,7 @@ const renderFormTextArea = (props) => {
         id={input.name}
         className="form-control"
         placeholder={placeholder}
+        rows={nRows}
       />
       {tips && <div className="form-text">{tips}</div>}
       {touched &&

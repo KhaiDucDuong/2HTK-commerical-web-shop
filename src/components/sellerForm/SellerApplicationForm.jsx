@@ -57,7 +57,7 @@ const SellerAplicationForm = (props) => {
       <div className="row">
         <div className="col-md-6">
           <Field
-            name="mobileNo"
+            name="phoneNumber"
             type="number"
             label="Mobile no"
             component={renderFormGroupField}
@@ -93,6 +93,7 @@ const SellerAplicationForm = (props) => {
             name="applyingReason"
             label="Applaying Reason"
             maxLength="200"
+            rows={4}
             component={renderFormTextArea}
             validate={maxLength200}
             placeholder="Briefly describe your business (200 words max)."
@@ -104,6 +105,7 @@ const SellerAplicationForm = (props) => {
             name="businessPlanDescription"
             label="Detailed Business Plan"
             maxLength="1000"
+            rows={6}
             component={renderFormTextArea}
             validate={maxLength1000}
             placeholder="Explain your business plan in details (1000 words max)."
