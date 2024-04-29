@@ -1,10 +1,67 @@
-import { lazy } from "react";
-const SellerAplicationForm = lazy(() => import("../../components/sellerForm/SellerApplicationForm"));
+import { lazy, useEffect, useState } from "react";
+import LogInRequired from "../pages/LogInRequired";
+import { fetchApi } from "../../hooks/useFetch";
+const SellerAplicationForm = lazy(() =>
+  import("../../components/sellerForm/SellerApplicationForm")
+);
 
-const SellerApplicationView = () => {
+const SellerApplicationView = (props) => {
+  const { userData } = props;
+
+  const [responseData, setResponseData] = useState(null);
+  //0 - show nothing
+  //1 - creating a seller application successfully,
+  //-1 - failed to create a seller application
+  //-2 - user has reached the maximum number of applications submitted
+  const [formSubmissionMessage, setFormSubmissionMessage] = useState(0);
+  //the list of seller applications the logged in user has created
+  const [userSellerApplications, setUserSellerApplications] = useState([]);
+
+  //fetch user's seller applications data on page reload
+  useEffect(() => {
+    if (userData != null) {
+    }
+  }, []);
+
   const onSubmit = async (values) => {
     alert(JSON.stringify(values));
+
+    const jsonData = JSON.stringify({
+      name: values.name,
+      phoneNumber: values.phoneNumber,
+      email: values.email,
+      applyingReason: values.applyingReason,
+      businessPlanDescription: values.businessPlanDescription,
+      images: [],
+    });
+    const response = await fetchApi(
+      process.env.REACT_APP_ACCOUNT_CREATE_SELLER_APPLICATION_API,
+      "POST",
+      jsonData
+    );
+
+    if (response.status === 201) {
+      const data = await response.json();
+      console.log(data);
+      setResponseData(data);
+      setFormSubmissionMessage(1)
+    }
+    else{
+      setFormSubmissionMessage(-1)
+    }
+    // const data = await response.json();
+    // //console.log(data)
+    // if (data.status === 9999) {
+    //   setResponseData(data);
+    //   setSignUpSuccess(true);
+    //   setSignUpFail(false);
+    // } else {
+    //   setSignUpFail(true);
+    //   setSignUpSuccess(false);
+    // }
   };
+
+  if (userData == null) return <LogInRequired />;
 
   return (
     <div className="container my-3">

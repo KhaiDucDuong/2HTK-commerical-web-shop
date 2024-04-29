@@ -89,7 +89,7 @@ function App() {
                 path="/account/notification"
                 element={<NotificationView />}
               />
-              <Route exact path="/account/seller-application" element={<SellerApplication />} />
+              <Route exact path="/account/seller-application" element={<SellerApplication userData={user} />} />
               <Route exact path="/category" element={<ProductListView />} />
               <Route
                 exact
