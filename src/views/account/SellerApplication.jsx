@@ -1,6 +1,7 @@
 import { lazy, useEffect, useState } from "react";
 import LogInRequired from "../pages/LogInRequired";
 import { fetchApi } from "../../hooks/useFetch";
+import { reset } from "redux-form";
 const SellerAplicationForm = lazy(() =>
   import("../../components/sellerForm/SellerApplicationForm")
 );
@@ -13,7 +14,7 @@ const SellerApplicationView = (props) => {
   //1 - creating a seller application successfully,
   //-1 - failed to create a seller application
   //-2 - user has reached the maximum number of applications submitted
-  const [formSubmissionMessage, setFormSubmissionMessage] = useState(0);
+  const [formSubmissionStatus, setFormSubmissionStatus] = useState(0);
   //the list of seller applications the logged in user has created
   const [userSellerApplications, setUserSellerApplications] = useState([]);
 
@@ -23,10 +24,11 @@ const SellerApplicationView = (props) => {
     }
   }, []);
 
-  const onSubmit = async (values) => {
-    alert(JSON.stringify(values));
+  const onSubmit = async (values, dispatch) => {
+    //alert(JSON.stringify(values));
 
     const jsonData = JSON.stringify({
+      fromUser: userData.userId,
       name: values.name,
       phoneNumber: values.phoneNumber,
       email: values.email,
@@ -44,21 +46,11 @@ const SellerApplicationView = (props) => {
       const data = await response.json();
       console.log(data);
       setResponseData(data);
-      setFormSubmissionMessage(1)
+      setFormSubmissionStatus(1);
+      dispatch(reset("sellerApplicationForm"))
+    } else {
+      setFormSubmissionStatus(-1);
     }
-    else{
-      setFormSubmissionMessage(-1)
-    }
-    // const data = await response.json();
-    // //console.log(data)
-    // if (data.status === 9999) {
-    //   setResponseData(data);
-    //   setSignUpSuccess(true);
-    //   setSignUpFail(false);
-    // } else {
-    //   setSignUpFail(true);
-    //   setSignUpSuccess(false);
-    // }
   };
 
   if (userData == null) return <LogInRequired />;
@@ -72,7 +64,7 @@ const SellerApplicationView = (props) => {
               <i className="bi bi-briefcase"></i> Seller Application
             </div>
             <div className="card-body">
-              <SellerAplicationForm onSubmit={onSubmit} />
+              <SellerAplicationForm onSubmit={onSubmit} formSubmissionStatus={formSubmissionStatus} />
             </div>
           </div>
         </div>

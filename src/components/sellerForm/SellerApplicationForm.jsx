@@ -1,5 +1,5 @@
 import React from "react";
-import { Field, reduxForm } from "redux-form";
+import { Field, reduxForm, reset } from "redux-form";
 import { compose } from "redux";
 import {
   renderFormGroupField,
@@ -23,7 +23,14 @@ import { ReactComponent as IconPhone } from "bootstrap-icons/icons/phone.svg";
 import { ReactComponent as IconEnvelope } from "bootstrap-icons/icons/envelope.svg";
 
 const SellerAplicationForm = (props) => {
-  const { handleSubmit, submitting, onSubmit, submitFailed } = props;
+  const {
+    handleSubmit,
+    submitting,
+    onSubmit,
+    submitFailed,
+    formSubmissionStatus,
+  } = props;
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -34,7 +41,7 @@ const SellerAplicationForm = (props) => {
         Note: update this component to fetch user's information and set the
         default value for phone and email inputs, if the user hasn't set these
         values then provide a warning telling the user to update their phone and
-        email.
+        email. Update FE sends token to BE instead of directly sending userId.
       </h6>
       <div className="row">
         <div className="col-md-6">
@@ -46,8 +53,7 @@ const SellerAplicationForm = (props) => {
             placeholder="Your full name"
             icon={IconPerson}
             required={true}
-            validate={[required, maxLength50, name]}
-            pattern="[a-zA-Z\s]*"
+            validate={[required, maxLength50]}
             maxLength="50"
             className="mb-3"
           />
@@ -123,6 +129,14 @@ const SellerAplicationForm = (props) => {
           />
         </div>
       </div>
+      {formSubmissionStatus === 1 && (
+        <h3 className="text-success">
+          You have successfully sent a seller application!
+        </h3>
+      )}
+      {formSubmissionStatus === -1 && (
+        <h3 className="text-danger">Failed to create a seller application!</h3>
+      )}
       <div className="d-grid">
         <button
           type="submit"
@@ -138,6 +152,6 @@ const SellerAplicationForm = (props) => {
 
 export default compose(
   reduxForm({
-    form: "SellerApplicationForm",
+    form: "sellerApplicationForm",
   })
 )(SellerAplicationForm);
