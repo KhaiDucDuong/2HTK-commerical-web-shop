@@ -7,6 +7,7 @@ const Header = ({ user, setUser }) => {
   function handleLogout() {
     setUser(null);
     localStorage.removeItem("user");
+    navigate("/")
     window.location.reload();
   }
 
