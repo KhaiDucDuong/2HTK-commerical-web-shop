@@ -137,6 +137,9 @@ const SellerAplicationForm = (props) => {
       {formSubmissionStatus === -1 && (
         <h3 className="text-danger">Failed to create a seller application!</h3>
       )}
+      {formSubmissionStatus === -2 && (
+        <h3 className="text-warning">You can't submit another seller application right now! Wait until your documents are reviewed or contact the website support!</h3>
+      )}
       <div className="d-grid">
         <button
           type="submit"
