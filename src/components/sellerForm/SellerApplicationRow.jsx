@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 const SellerAplicationRow = (props) => {
   const { rowOnClick, sellerApplication } = props;
-  const applyTime = new Date(sellerApplication.createdAt)
+  const applyTime = new Date(sellerApplication.createdAt);
   const options = {
     year: "numeric",
     month: "numeric",
@@ -13,12 +13,14 @@ const SellerAplicationRow = (props) => {
     hour12: false,
     timeZone: "Asia/Bangkok",
   };
-  const displayApplyTime = new Intl.DateTimeFormat("vi-VN", options).format(applyTime)
+  const displayApplyTime = new Intl.DateTimeFormat("vi-VN", options).format(
+    applyTime
+  );
 
   return (
     <tr>
-      <td>
-        <div className="row">
+      <td style={{ maxWidth: "30vw" }}>
+        <div>
           {/* <div className="col-3 d-none d-md-block">
             <img
               src=""
@@ -27,9 +29,8 @@ const SellerAplicationRow = (props) => {
             />
           </div> */}
           <div
-            className="col"
             style={{
-              height: "200px",
+              height: "100px",
               textOverflow: "ellipsis",
               overflow: "hidden",
             }}

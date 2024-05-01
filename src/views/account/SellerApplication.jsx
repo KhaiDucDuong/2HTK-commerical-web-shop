@@ -11,6 +11,9 @@ const SellerAplicationForm = lazy(() =>
 const SellerApplicationView = (props) => {
   const { userData } = props;
 
+  //the current tab that is display: applicationList or applicationForm
+  const [selectedTab, setSelectedTab] = useState("applicationList");
+
   const [responseData, setResponseData] = useState(null);
   //0 - show nothing
   //1 - creating a seller application successfully,
@@ -23,7 +26,7 @@ const SellerApplicationView = (props) => {
   //fetch user's seller applications data on page reload
   useEffect(() => {
     fetchUserSellerApplications();
-  }, []);
+  }, [formSubmissionStatus]);
 
   const fetchUserSellerApplications = async () => {
     if (userData != null) {
@@ -34,7 +37,7 @@ const SellerApplicationView = (props) => {
       );
       const data = await response.json();
       setUserSellerApplications(data);
-      console.log(data)
+      console.log(data);
     }
   };
 
@@ -81,40 +84,59 @@ const SellerApplicationView = (props) => {
                 <i className="bi bi-briefcase"></i> Seller Application
               </div>
               <div className="col-sm-6 d-flex justify-content-end">
-                <Button className="">Create Seller Application</Button>
+                {selectedTab === "applicationList" && (
+                  <Button
+                    className=""
+                    onClick={() => setSelectedTab("applicationForm")}
+                  >
+                    Create Seller Application
+                  </Button>
+                )}
+                {selectedTab === "applicationForm" && (
+                  <Button
+                    className=""
+                    onClick={() => setSelectedTab("applicationList")}
+                  >
+                    Go Back
+                  </Button>
+                )}
               </div>
             </div>
             <div className="card-body">
-              {/* <SellerAplicationForm
-                onSubmit={onSubmit}
-                formSubmissionStatus={formSubmissionStatus}
-              /> */}
-              <div className="table-responsive">
-                <table className="table table-borderless">
-                  <thead className="text-muted">
-                    <tr className="small text-uppercase">
-                      <th scope="col">Applying Reason</th>
-                      <th scope="col" width={150}>
-                        Apply Time
-                      </th>
-                      <th scope="col" width={150}>
-                        Status
-                      </th>
-                      <th scope="col" className="text-end" width={130}></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {userSellerApplications.length > 0 &&
-                      userSellerApplications.map((sellerApplication) => {
-                        return (
-                          <SellerAplicationRow
-                            sellerApplication={sellerApplication}
-                          />
-                        );
-                      })}
-                  </tbody>
-                </table>
-              </div>
+              {selectedTab === "applicationList" && (
+                <div className="table-responsive">
+                  <table className="table table-borderless">
+                    <thead className="text-muted">
+                      <tr className="small text-uppercase">
+                        <th scope="col">Applying Reason</th>
+                        <th scope="col" width={150}>
+                          Apply Time
+                        </th>
+                        <th scope="col" width={150}>
+                          Status
+                        </th>
+                        <th scope="col" className="text-end" width={130}></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {userSellerApplications.length > 0 &&
+                        userSellerApplications.map((sellerApplication) => {
+                          return (
+                            <SellerAplicationRow
+                              sellerApplication={sellerApplication}
+                            />
+                          );
+                        })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+              {selectedTab === "applicationForm" && (
+                <SellerAplicationForm
+                  onSubmit={onSubmit}
+                  formSubmissionStatus={formSubmissionStatus}
+                />
+              )}
             </div>
           </div>
         </div>
