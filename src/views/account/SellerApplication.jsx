@@ -3,6 +3,7 @@ import LogInRequired from "../pages/LogInRequired";
 import { fetchApi } from "../../hooks/useFetch";
 import { reset } from "redux-form";
 import { Button } from "react-bootstrap";
+import SellerAplicationRow from "../../components/sellerForm/SellerApplicationRow";
 const SellerAplicationForm = lazy(() =>
   import("../../components/sellerForm/SellerApplicationForm")
 );
@@ -21,9 +22,21 @@ const SellerApplicationView = (props) => {
 
   //fetch user's seller applications data on page reload
   useEffect(() => {
-    if (userData != null) {
-    }
+    fetchUserSellerApplications();
   }, []);
+
+  const fetchUserSellerApplications = async () => {
+    if (userData != null) {
+      const response = await fetchApi(
+        process.env.REACT_APP_ACCOUNT_GET_USER_SELLER_APPLICATIONS_API +
+          userData.userId,
+        "GET"
+      );
+      const data = await response.json();
+      setUserSellerApplications(data);
+      console.log(data)
+    }
+  };
 
   const onSubmit = async (values, dispatch) => {
     //alert(JSON.stringify(values));
@@ -60,7 +73,7 @@ const SellerApplicationView = (props) => {
 
   return (
     <div className="container my-3">
-      <div className="row g-3">
+      <div className="row g-3 d-flex justify-content-center">
         <div className="col-md-8">
           <div className="card">
             <div className="card-header row g-3">
@@ -72,10 +85,36 @@ const SellerApplicationView = (props) => {
               </div>
             </div>
             <div className="card-body">
-              <SellerAplicationForm
+              {/* <SellerAplicationForm
                 onSubmit={onSubmit}
                 formSubmissionStatus={formSubmissionStatus}
-              />
+              /> */}
+              <div className="table-responsive">
+                <table className="table table-borderless">
+                  <thead className="text-muted">
+                    <tr className="small text-uppercase">
+                      <th scope="col">Applying Reason</th>
+                      <th scope="col" width={150}>
+                        Apply Time
+                      </th>
+                      <th scope="col" width={150}>
+                        Status
+                      </th>
+                      <th scope="col" className="text-end" width={130}></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {userSellerApplications.length > 0 &&
+                      userSellerApplications.map((sellerApplication) => {
+                        return (
+                          <SellerAplicationRow
+                            sellerApplication={sellerApplication}
+                          />
+                        );
+                      })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
