@@ -10,13 +10,13 @@ async function fetchData(url) {
 }
 
 export async function AllProducts() {
-    let url = `http://localhost:8080/products/category`;
+    let url = `http://localhost:8080/api/products/category`;
     const productList = await fetchData(url);
     return productList;
 }
 
 export async function findProducts(name) {
-    let url = `http://localhost:8080/products/category?search=` + name;
+    let url = `http://localhost:8080/api/products/category?search=` + name;
     const productList = await fetchData(url);
     return productList;
 }
