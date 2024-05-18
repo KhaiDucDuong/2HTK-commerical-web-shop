@@ -1,44 +1,53 @@
 import { lazy } from "react";
 
-const ShopInfor = () => {
+const ShopInfor = (props) => {
+  const { shopData } = props;
+  const shopImgPath = "../../images/NO_IMG.png";
+  if (shopData.image != null && (shopData.image.trim().length > 0)){
+    shopImgPath = shopData.image
+  }
+
   return (
-    <div class="">
-    <table width="100%" class="table table-bordered">
+    <div className="">
+      <table width="100%" className="table table-bordered">
         <tr>
-            <td class="col-xs-4 user-img" rowspan="4">
-                        <img src="../../images/NO_IMG.png"/>
-            </td>
+          <td className="col-xs-4 user-img" rowSpan="4">
+            <img src={shopImgPath} />
+          </td>
 
-            <td id="info-row" class="col-xs-4" colspan="1">
-                <h2 class="user-name">Ten Shop</h2>
-            </td>
-
-        </tr>
-        <tr >
-            <td id="info-row" class="col-xs-8" colspan="2">
-                    <p class="user-id h3">Shop ID: 123123</p>
-                <p class="user-email">Email: trantien@gmail.com</p>
-            </td>
+          <td id="info-row" className="col-xs-4" colSpan="1">
+            <h2 className="user-name">{shopData.name}</h2>
+          </td>
         </tr>
         <tr>
-            <td id="info-row" class="col-xs-8 borderless-top borderless-bottom" colspan="2">
-                <p class="user-infor">Shop Infor</p>
-            </td>
+          <td id="info-row" className="col-xs-8" colSpan="2">
+            <p className="user-email">Location: {shopData.address}</p>
+          </td>
         </tr>
         <tr>
-            <td id="info-row" class="col-xs-4" colspan="1">
-                <div class="">
-                    <span class="user-records">Liked: 44</span>
-                    <span class="lnr lnr-heart vector-symbol"></span>
-                </div>
-            </td>
-            <td id="info-row" class="col-xs-4" colspan="1">
-                <div class="">
-                    <span class="user-records">Products:69</span>
-                </div>
-            </td>
+          <td
+            id="info-row"
+            className="col-xs-8 borderless-top borderless-bottom"
+            colSpan="2"
+          >
+            <p className="user-infor">Shop Description</p>
+            <p className="user-infor">{shopData.description}</p>
+          </td>
         </tr>
-    </table>
+        <tr>
+          <td id="info-row" className="col-xs-4" colSpan="1">
+            <div className="">
+              <span className="user-records">Liked: 44</span>
+              <span className="lnr lnr-heart vector-symbol"></span>
+            </div>
+          </td>
+          <td id="info-row" className="col-xs-4" colSpan="1">
+            <div className="">
+              <span className="user-records">Products: 69</span>
+            </div>
+          </td>
+        </tr>
+      </table>
     </div>
   );
 };
