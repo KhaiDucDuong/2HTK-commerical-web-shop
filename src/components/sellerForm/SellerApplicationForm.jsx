@@ -97,7 +97,7 @@ const SellerAplicationForm = (props) => {
         <div className="col-md-12">
           <Field
             name="applyingReason"
-            label="Applaying Reason"
+            label="Applying Reason"
             maxLength="200"
             rows={4}
             component={renderFormTextArea}
