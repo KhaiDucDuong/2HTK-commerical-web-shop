@@ -16,8 +16,39 @@ const MyShopView = (props) => {
   //const [hasShop, setHasShop] = useState(false);
   const [shopData, setShopData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const onSubmit = async (values) => {
-    alert(JSON.stringify(values));
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    const fileInput = document.querySelector("#shopImageFileForm");
+    // console.log(document.querySelector("#shopImageFileForm"))
+    // console.log(shopImageFile)
+    if (fileInput.files[0] == null) {
+      alert("Please upload an image!");
+      return;
+    }
+
+    formData.append("image", fileInput.files[0]);
+    // console.log(process.env.REACT_APP_UPDATE_SHOP_IMAGE_API + shopData._id)
+    // console.log(formData)
+    try {
+      const response = await fetch(
+        process.env.REACT_APP_UPDATE_SHOP_IMAGE_API + shopData._id,
+        {
+          method: "PUT",
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.status === 9999) {
+        setShopData(data.payload);
+        alert("Shop image has been updated!");
+      } else alert(data.payload);
+    } catch (e) {
+      alert("Failed to update shop image!");
+    }
   };
 
   useEffect(() => {
@@ -54,8 +85,10 @@ const MyShopView = (props) => {
       ) : (
         //shop
         <>
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <ShopInfor shopData={shopData} />{" "}
+          <div
+            style={{ display: "flex", justifyContent: "center", minWidth: 50 }}
+          >
+            <ShopInfor shopData={shopData} onSubmit={onSubmit} />{" "}
           </div>
           <div style={{ display: "flex", justifyContent: "space-evenly" }}>
             <ShopProduct />

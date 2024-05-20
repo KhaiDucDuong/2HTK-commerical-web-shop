@@ -47,12 +47,8 @@ const ProfileForm = (props) => {
             component={renderFormFileInput}
             onImageChange={onImageChange}
             validate={[required]}
-            tips="You don't allow uploading a photo more than 5MB"
+            tips="You don't allow uploading a photo more than 2MB"
           />
-          <p className="card-text">
-            With supporting text below as a natural lead-in to additional
-            content.
-          </p>
         </div>
         <ul className="list-group list-group-flush">
           <li className="list-group-item">
