@@ -1,7 +1,9 @@
-import React from "react";
+import React, { lazy, Component, useState,useEffect } from "react";
+import {AllCategory} from "../../hooks/categoryApi"
 import { Link } from "react-router-dom";
 
-const FilterCategory = (props) => {
+const FilterCategory= (props) => {
+  const categoryList = props.data;
   return (
     <div className="card mb-3 accordion">
       <div
@@ -17,36 +19,15 @@ const FilterCategory = (props) => {
         className="list-group list-group-flush show"
         id="filterCategory"
       >
-        <li className="list-group-item">
-          <Link to="/" className="text-decoration-none stretched-link">
-            Clothing
-          </Link>
+      {categoryList.length > 0 && categoryList.map((category, idx) => {
+                    return (
+        <li  key={idx} className="list-group-item">
+        <a href={`/category?ID=${category._id}`} className="text-decoration-none stretched-link">
+          {category.categoryName}
+          </a>
         </li>
-        <li className="list-group-item">
-          <Link to="/" className="text-decoration-none stretched-link">
-            Leather Bag
-          </Link>
-        </li>
-        <li className="list-group-item">
-          <Link to="/" className="text-decoration-none stretched-link">
-            Trausers
-          </Link>
-        </li>
-        <li className="list-group-item">
-          <Link to="/" className="text-decoration-none stretched-link">
-            Sweater & Cardigans
-          </Link>
-        </li>
-        <li className="list-group-item">
-          <Link to="/" className="text-decoration-none stretched-link">
-            High Heels
-          </Link>
-        </li>
-        <li className="list-group-item">
-          <Link to="/" className="text-decoration-none stretched-link">
-            Coats & Jackets
-          </Link>
-        </li>
+                    );
+                  })}
       </ul>
     </div>
   );

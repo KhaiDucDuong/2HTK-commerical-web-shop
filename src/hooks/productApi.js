@@ -20,3 +20,9 @@ export async function findProducts(name) {
     const productList = await fetchData(url);
     return productList;
 }
+export async function findProductsByCategory(ID) {
+    let url = `http://localhost:8080/api/products/category?ID=` + ID;
+    const productList = await fetchData(url);
+    return productList;
+}
+

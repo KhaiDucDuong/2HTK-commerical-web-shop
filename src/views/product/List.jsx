@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import {fetchApi} from "../../hooks/useFetch";
 import {AllProducts} from "../../hooks/productApi"
 import {findProducts} from "../../hooks/productApi"
+import {findProductsByCategory} from "../../hooks/productApi"
+import {AllCategory} from "../../hooks/categoryApi"
 const Paging = lazy(() => import("../../components/Paging"));
 const Breadcrumb = lazy(() => import("../../components/Breadcrumb"));
 const FilterCategory = lazy(() => import("../../components/filter/Category"));
@@ -24,8 +26,10 @@ const CardProductList = lazy(() =>
 
 function ProductListView() {
   const [productList, setProductList] = useState([]);
+  const [categoryList,setCategoryList] = useState([]);
   let queryParameters = new URLSearchParams(window.location.search)
   let productName = queryParameters.get("search")
+  let productCategory = queryParameters.get("ID")
   useEffect(() => {
       const fetchDataAll = async () => {
           const products = await AllProducts();
@@ -34,13 +38,25 @@ function ProductListView() {
       const fetchDataName = async (name) => {
           const products = await findProducts(name);
           setProductList(products);
+      };
+      const fetchDataCategory = async (name) => {
+        const products = await findProductsByCategory(name);
+        setProductList(products);
+    };
+      const fetchCategory = async() => {
+        const category = await AllCategory();
+        setCategoryList(category);
+      };
+      if (productName != null){
+        fetchDataName(productName);
       }
-      if (productName == null){
-      fetchDataAll();
+      if(productCategory != null) {
+        fetchDataCategory(productCategory);
       }
       else {
-        fetchDataName(productName)
+        fetchDataAll();
       }
+      fetchCategory();
   }, []);
     return (
       <>
@@ -60,7 +76,7 @@ function ProductListView() {
         <div className="container-fluid mb-3">
           <div className="row">
             <div className="col-md-3">
-              <FilterCategory />
+              <FilterCategory data={categoryList} />
               <FilterPrice />
               <FilterSize />
               <FilterStar />
@@ -74,7 +90,7 @@ function ProductListView() {
                 <div className="col-7">
                   <span className="align-middle fw-bold">
                     {/* {this.state.totalItems} results for{" "} */}
-                    <span className="text-warning">Result found: {productList.length}</span>
+                    <span className="text-warning">Seaching for: {productName}</span>
                   </span>
                 </div>
                 <div className="col-5 d-flex justify-content-end">
