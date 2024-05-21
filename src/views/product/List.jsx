@@ -47,13 +47,13 @@ function ProductListView() {
         const category = await AllCategory();
         setCategoryList(category);
       };
-      if (productName != null){
+      if (productName != null && productCategory == null){
         fetchDataName(productName);
       }
       if(productCategory != null) {
         fetchDataCategory(productCategory);
       }
-      else {
+      if(productName == null && productCategory == null) {
         fetchDataAll();
       }
       fetchCategory();
