@@ -14,11 +14,22 @@ const SellerForm = lazy(() =>
 const MyShopView = (props) => {
   const { userData } = props;
   //const [hasShop, setHasShop] = useState(false);
+  const [editingState, setEditingState] = useState(false);
   const [shopData, setShopData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedForm, setSelectedForm] = useState("SHOP_INFO"); //SHOP_IMG & SHOP_INFO
+  const [formData, setFormData] = useState();
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    if (selectedForm === "SHOP_IMG") await sendUpdateImgRequest();
+    else if (selectedForm === "SHOP_INFO") {
+      //alert(formData[0] + " " + formData[1] + " " + formData[2])
+      await sendUpdateShopInfoRequest(formData);
+    }
+  };
+
+  async function sendUpdateImgRequest() {
     const formData = new FormData();
     const fileInput = document.querySelector("#shopImageFileForm");
     // console.log(document.querySelector("#shopImageFileForm"))
@@ -49,7 +60,33 @@ const MyShopView = (props) => {
     } catch (e) {
       alert("Failed to update shop image!");
     }
-  };
+  }
+
+  async function sendUpdateShopInfoRequest(values) {
+    //console.log(values)
+    const jsonData = JSON.stringify({
+      name: values[0],
+      address: values[1],
+      description: values[2]
+    });
+    
+    try {
+      setEditingState(false)
+      const response = await fetchApi(
+        process.env.REACT_APP_UPDATE_SHOP_INFO_API + shopData._id,
+        "PUT",
+        jsonData
+      );
+  
+      const data = await response.json();
+      if (data.status === 9999) {
+        setShopData(data.payload);
+        alert("Shop Infomation has been updated!");
+      } else alert(data.payload);
+    } catch (e){
+      alert("Failed to update shop information!");
+    }
+  }
 
   useEffect(() => {
     fetchUserShop();
@@ -88,7 +125,14 @@ const MyShopView = (props) => {
           <div
             style={{ display: "flex", justifyContent: "center", minWidth: 50 }}
           >
-            <ShopInfor shopData={shopData} onSubmit={onSubmit} />{" "}
+            <ShopInfor
+              shopData={shopData}
+              onSubmit={onSubmit}
+              editingState={editingState}
+              setEditingState={setEditingState}
+              setSelectedForm={setSelectedForm}
+              setFormData={setFormData}
+            />{" "}
           </div>
           <div style={{ display: "flex", justifyContent: "space-evenly" }}>
             <ShopProduct />
