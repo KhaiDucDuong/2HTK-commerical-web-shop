@@ -71,7 +71,7 @@ class HomeView extends Component {
               <Carousel id="elect-product-category" className="mb-3">
                 {carouselContent}
               </Carousel>
-              <Support />
+              {/* <Support /> */}
             </div>
             <div className="col-md-3">
               <CardLogin className="mb-3" />
@@ -96,9 +96,9 @@ class HomeView extends Component {
         </div>
 
         <div className="bg-info bg-gradient p-3 text-center mb-3">
-          <h4 className="m-0">Explore Fashion Collection</h4>
+          {/* <h4 className="m-0">Explore Fashion Collection</h4> */}
         </div>
-        <div className="container">
+        {/* <div className="container">
           <div className="row">
             <div className="col-md-3">
               <Link to="/" className="text-decoration-none">
@@ -141,7 +141,7 @@ class HomeView extends Component {
               </Link>
             </div>
           </div>
-        </div>
+        </div> */}
       </React.Fragment>
     );
   }
