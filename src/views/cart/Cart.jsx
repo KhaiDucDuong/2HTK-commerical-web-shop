@@ -2,6 +2,7 @@ import { lazy, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import CartProduct from "../../components/cart/CartProduct";
 import { fetchApi } from "../../hooks/useFetch";
+import LogInRequired from "../pages/LogInRequired";
 const CouponApplyForm = lazy(() =>
   import("../../components/others/CouponApplyForm")
 );
@@ -38,6 +39,8 @@ const CartView = (props) => {
       setIsLoading(false);
     }
   };
+
+  if (userData == null) return <LogInRequired />;
 
   return (
     <div>
