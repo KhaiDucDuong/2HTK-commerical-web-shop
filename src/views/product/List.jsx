@@ -40,7 +40,7 @@ function ProductListView(props) {
     const fetchDataAll = async () => {
       const products = await AllProducts();
       setProductList(products);
-      console.log(products);
+      //console.log(products);
     };
     const fetchDataName = async (name) => {
       const products = await findProducts(name);
@@ -72,7 +72,7 @@ function ProductListView(props) {
       alert("You must sign in first to use this feature");
       return;
     }
-    console.log(formAction + " - " + selectedProductId);
+    //console.log(formAction + " - " + selectedProductId);
     if (formAction === "ADD_PRODUCT_TO_CART") {
       try {
         const responseData = await sendAddProductToCartRequest(
@@ -82,15 +82,17 @@ function ProductListView(props) {
           selectedColor,
           selectedSize
         );
-        console.log(
-          userData.userId +
-            " - " +
-            selectedProductId +
-            " - " +
-            selectedColor +
-            " - " +
-            selectedSize
-        );
+
+        // console.log(
+        //   userData.userId +
+        //     " - " +
+        //     selectedProductId +
+        //     " - " +
+        //     selectedColor +
+        //     " - " +
+        //     selectedSize
+        // );
+
         if (responseData.status === 9999) {
           alert("Add product to cart successfully!");
         } else {
