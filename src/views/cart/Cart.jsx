@@ -71,7 +71,7 @@ const CartView = (props) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {cartProducts == null ? (
+                        {cartProducts.length === 0 ? (
                           <h3 style={{marginLeft: "20px", marginTop: "10px"}}>Your cart is empty</h3>
                         ) : (
                           <>
