@@ -1,0 +1,9 @@
+.same-background-forever{
+    --bs-btn-hover-bg: none;
+    --bs-btn-active-bg: none;
+    cursor: default !important;
+}
+
+.select-product-input:hover{
+    cursor: pointer;
+}

@@ -12,6 +12,10 @@ const CartView = (props) => {
   const [cartId, setcartId] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [cartProducts, setCartProducts] = useState();
+  const [selectedProductId, setSelectedProductId] = useState();
+  const [selectedSize, setSelectedSize] = useState();
+  const [selectedColor, setSelectedColor] = useState();
+  const [formAction, setFormAction] = useState();
   const onSubmitApplyCouponCode = async (values) => {
     alert(JSON.stringify(values));
   };
@@ -24,6 +28,39 @@ const CartView = (props) => {
     }
   }, []);
 
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (formAction === "DELETE_PRODUCT_FROM_CART") {
+      try {
+        const responseData = await sendDeleteProductFromCartRequest(
+          userData.userId,
+          selectedProductId,
+          selectedColor,
+          selectedSize
+        );
+
+        if (responseData.status === 9999) {
+          alert("Delete product from cart successfully!");
+          fetchUserCart();
+        } else {
+          alert(responseData.payload);
+        }
+      } catch (e) {
+        alert("Falied to delete product from cart!");
+      }
+    } else if (formAction === "ADD_PRODUCT_TO_WISHLIST") {
+      alert(
+        formAction +
+          " " +
+          selectedProductId +
+          " " +
+          selectedColor +
+          " " +
+          selectedSize
+      );
+    }
+  };
+
   const fetchUserCart = async () => {
     if (userData != null) {
       const response = await fetchApi(
@@ -33,11 +70,33 @@ const CartView = (props) => {
       const data = await response.json();
       if (data.status === 9999) {
         setcartId(data.payload.id);
-        setCartProducts(data.payload.cart_products)
-        console.log(data);
+        setCartProducts(data.payload.cart_products);
+        //console.log(data);
       }
       setIsLoading(false);
     }
+  };
+
+  const sendDeleteProductFromCartRequest = async (
+    userId,
+    productId,
+    color,
+    size
+  ) => {
+    const jsonData = JSON.stringify({
+      productId: productId,
+      color: color,
+      size: size,
+    });
+
+    const response = await fetchApi(
+      process.env.REACT_APP_DELETE_PRODUCT_FROM_CART_API + userId,
+      "DELETE",
+      jsonData
+    );
+
+    const data = await response.json();
+    return data;
   };
 
   if (userData == null) return <LogInRequired />;
@@ -48,96 +107,123 @@ const CartView = (props) => {
         <h1 className="display-6">Shopping Cart</h1>
       </div>
       {isLoading ? (
-        <h1 style={{textAlign: "center", marginTop: "100px", marginBottom: "100px"}}>Loading...</h1>
+        <h1
+          style={{
+            textAlign: "center",
+            marginTop: "100px",
+            marginBottom: "100px",
+          }}
+        >
+          Loading...
+        </h1>
       ) : (
-        <div className="container mb-3">
-          <div className="row">
-            <div className="col-md-9">
-              {cartId == null && <h1>No Cart found</h1>}
-              {cartId != null && (
-                <div className="card">
-                  <div className="table-responsive">
-                    <table className="table table-borderless">
-                      <thead className="text-muted">
-                        <tr className="small text-uppercase">
-                          <th scope="col">Product</th>
-                          <th scope="col" width={120}>
-                            Quantity
-                          </th>
-                          <th scope="col" width={150}>
-                            Price
-                          </th>
-                          <th scope="col" className="text-end" width={130}></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {cartProducts.length === 0 ? (
-                          <h3 style={{marginLeft: "20px", marginTop: "10px"}}>Your cart is empty</h3>
-                        ) : (
-                          <>
-                            {cartProducts.map((product) => (
-                              <CartProduct product={product} />
-                            ))}
-                          </>
-                        )}
-                      </tbody>
-                    </table>
+        <form onSubmit={onSubmit}>
+          <div className="container mb-3">
+            <div className="row">
+              <div className="col-md-9">
+                {cartId == null && <h1>No Cart found</h1>}
+                {cartId != null && (
+                  <div className="card">
+                    <div className="table-responsive">
+                      <table className="table table-borderless">
+                        <thead className="text-muted">
+                          <tr className="small text-uppercase">
+                            <th scope="col">Product</th>
+                            <th scope="col" width={120}>
+                              Quantity
+                            </th>
+                            <th scope="col" width={150}>
+                              Price
+                            </th>
+                            <th
+                              scope="col"
+                              className="text-end"
+                              width={130}
+                            ></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {cartProducts.length === 0 ? (
+                            <h3
+                              style={{ marginLeft: "20px", marginTop: "10px" }}
+                            >
+                              Your cart is empty
+                            </h3>
+                          ) : (
+                            <>
+                              {cartProducts.map((product) => (
+                                <CartProduct
+                                  product={product}
+                                  setSelectedProductId={setSelectedProductId}
+                                  setSelectedSize={setSelectedSize}
+                                  setSelectedColor={setSelectedColor}
+                                  setFormAction={setFormAction}
+                                />
+                              ))}
+                            </>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="card-footer">
+                      <Link
+                        to="/checkout"
+                        className="btn btn-primary float-end"
+                      >
+                        Make Purchase <i className="bi bi-chevron-right"></i>
+                      </Link>
+                      <Link to="/" className="btn btn-secondary">
+                        <i className="bi bi-chevron-left"></i> Continue shopping
+                      </Link>
+                    </div>
                   </div>
-                  <div className="card-footer">
-                    <Link to="/checkout" className="btn btn-primary float-end">
-                      Make Purchase <i className="bi bi-chevron-right"></i>
-                    </Link>
-                    <Link to="/" className="btn btn-secondary">
-                      <i className="bi bi-chevron-left"></i> Continue shopping
-                    </Link>
-                  </div>
-                </div>
-              )}
-              {/* <div className="alert alert-success mt-3">
+                )}
+                {/* <div className="alert alert-success mt-3">
               <p className="m-0">
                 <i className="bi bi-truck"></i> Free Delivery within 1-2 weeks
               </p>
             </div> */}
-            </div>
-            <div className="col-md-3">
-              <div className="card mb-3">
-                <div className="card-body">
-                  <CouponApplyForm onSubmit={onSubmitApplyCouponCode} />
-                </div>
               </div>
-              <div className="card">
-                <div className="card-body">
-                  <dl className="row border-bottom">
-                    <dt className="col-6">Total price:</dt>
-                    <dd className="col-6 text-end">$1,568</dd>
+              <div className="col-md-3">
+                <div className="card mb-3">
+                  <div className="card-body">
+                    <CouponApplyForm onSubmit={onSubmitApplyCouponCode} />
+                  </div>
+                </div>
+                <div className="card">
+                  <div className="card-body">
+                    <dl className="row border-bottom">
+                      <dt className="col-6">Total price:</dt>
+                      <dd className="col-6 text-end">$1,568</dd>
 
-                    <dt className="col-6 text-success">Discount:</dt>
-                    <dd className="col-6 text-success text-end">-$58</dd>
-                    <dt className="col-6 text-success">
-                      Coupon:{" "}
-                      <span className="small text-muted">EXAMPLECODE</span>{" "}
-                    </dt>
-                    <dd className="col-6 text-success text-end">-$68</dd>
-                  </dl>
-                  <dl className="row">
-                    <dt className="col-6">Total:</dt>
-                    <dd className="col-6 text-end  h5">
-                      <strong>$1,350</strong>
-                    </dd>
-                  </dl>
-                  <hr />
-                  <p className="text-center">
-                    <img
-                      src="../../images/payment/payments.webp"
-                      alt="..."
-                      height={26}
-                    />
-                  </p>
+                      <dt className="col-6 text-success">Discount:</dt>
+                      <dd className="col-6 text-success text-end">-$58</dd>
+                      <dt className="col-6 text-success">
+                        Coupon:{" "}
+                        <span className="small text-muted">EXAMPLECODE</span>{" "}
+                      </dt>
+                      <dd className="col-6 text-success text-end">-$68</dd>
+                    </dl>
+                    <dl className="row">
+                      <dt className="col-6">Total:</dt>
+                      <dd className="col-6 text-end  h5">
+                        <strong>$1,350</strong>
+                      </dd>
+                    </dl>
+                    <hr />
+                    <p className="text-center">
+                      <img
+                        src="../../images/payment/payments.webp"
+                        alt="..."
+                        height={26}
+                      />
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </form>
       )}
       <div className="bg-light border-top p-4">
         <div className="container">
