@@ -27,9 +27,6 @@ const Header = ({ user, setUser }) => {
             <div className="position-relative d-inline me-3">
               <Link to="/cart" className="btn btn-primary">
                 <i className="bi bi-cart3"></i>
-                <div className="position-absolute top-0 start-100 translate-middle badge bg-danger rounded-circle">
-                  2
-                </div>
               </Link>
             </div>
             <div className="btn-group">
