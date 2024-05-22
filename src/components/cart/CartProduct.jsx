@@ -16,7 +16,7 @@ const CartProduct = (props) => {
           </div>
           <div className="col">
             <Link to="/product/detail" className="text-decoration-none">
-              {product.description}
+              {product.name}
             </Link>
             <p className="small text-muted">
               Size: {product.size}, Color: {product.color}, Brand: {"..."}
