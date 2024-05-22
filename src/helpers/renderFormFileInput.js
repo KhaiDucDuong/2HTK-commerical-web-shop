@@ -10,7 +10,7 @@ const handleChange = (event, input, onImageChange) => {
       alert("Please select image file only!");
     } else {
       var fileSize = imageFile.size / 1024 / 1024; // in MB
-      if (fileSize > 5) {
+      if (fileSize > 2) {
         alert(
           `Photo size must be less or equal to 5MB. Your photo size is ${fileSize}`
         );

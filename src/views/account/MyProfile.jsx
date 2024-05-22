@@ -38,6 +38,7 @@ class MyProfileView extends Component {
       reader.onerror = (error) => reject(error);
     });
   };
+  
   render() {
     return (
       <div className="container-fluid my-3">
