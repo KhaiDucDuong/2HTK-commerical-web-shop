@@ -48,7 +48,7 @@ const CartView = (props) => {
         <h1 className="display-6">Shopping Cart</h1>
       </div>
       {isLoading ? (
-        <h1>Loading...</h1>
+        <h1 style={{textAlign: "center", marginTop: "100px", marginBottom: "100px"}}>Loading...</h1>
       ) : (
         <div className="container mb-3">
           <div className="row">

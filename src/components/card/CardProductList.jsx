@@ -2,11 +2,18 @@ import { Link } from "react-router-dom";
 
 const CardProductList = (props) => {
   const product = props.data;
+  const { setSelectedProductId, setFormAction, setSelectedSize, setSelectedColor } = props;
+
   return (
     <div className="card">
       <div className="row g-0">
         <div className="col-md-3 text-center">
-          <img src={`${product.productVariations[0].image}`} className="img-fluid" alt="..."  style={{ width: '200px', height: '200px' }} />
+          <img
+            src={`${product.productVariations[0].image}`}
+            className="img-fluid"
+            alt="..."
+            style={{ width: "200px", height: "200px" }}
+          />
         </div>
         <div className="col-md-6">
           <div className="card-body">
@@ -55,7 +62,9 @@ const CardProductList = (props) => {
         <div className="col-md-3">
           <div className="card-body">
             <div className="mb-2">
-              <span className="fw-bold h5">${product.productVariations[0].price}</span>
+              <span className="fw-bold h5">
+                ${product.productVariations[0].price}
+              </span>
               {product.originPrice > 0 && (
                 <del className="small text-muted ms-2">
                   ${product.originPrice}
@@ -79,16 +88,26 @@ const CardProductList = (props) => {
 
             <div className="btn-group d-flex" role="group">
               <button
-                type="button"
+                type="submit"
                 className="btn btn-sm btn-primary"
                 title="Add to cart"
+                onClick={() => {
+                  setFormAction("ADD_PRODUCT_TO_CART");
+                  setSelectedProductId(product._id);
+                  setSelectedSize(product.productVariations[0].size)
+                  setSelectedColor(product.productVariations[0].color)
+                }}
               >
                 <i className="bi bi-cart-plus" />
               </button>
               <button
-                type="button"
+                type="submit"
                 className="btn btn-sm btn-outline-secondary"
                 title="Add to wishlist"
+                onClick={() => {
+                  setFormAction("ADD_PRODUCT_TO_WISHLIST");
+                  setSelectedProductId(product._id);
+                }}
               >
                 <i className="bi bi-heart-fill" />
               </button>
