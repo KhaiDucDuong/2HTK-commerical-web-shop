@@ -15,6 +15,7 @@ const CartView = (props) => {
   const [selectedProductId, setSelectedProductId] = useState();
   const [selectedSize, setSelectedSize] = useState();
   const [selectedColor, setSelectedColor] = useState();
+  const [newProductQuantity, setNewProductQuantity] = useState()
   const [formAction, setFormAction] = useState();
   const onSubmitApplyCouponCode = async (values) => {
     alert(JSON.stringify(values));
@@ -48,16 +49,25 @@ const CartView = (props) => {
       } catch (e) {
         alert("Falied to delete product from cart!");
       }
-    } else if (formAction === "ADD_PRODUCT_TO_WISHLIST") {
-      alert(
-        formAction +
-          " " +
-          selectedProductId +
-          " " +
-          selectedColor +
-          " " +
+    } else if (formAction === "UPDATE_PRODUCT_QUANTITY_IN_CART") {
+      try {
+        const responseData = await sendUpdateProductQuantityInCartRequest(
+          userData.userId,
+          selectedProductId,
+          newProductQuantity,
+          selectedColor,
           selectedSize
-      );
+        );
+
+        if (responseData.status === 9999) {
+          alert("Update product quantity successfully!");
+          fetchUserCart();
+        } else {
+          alert(responseData.payload);
+        }
+      } catch (e) {
+        alert("Falied to update product quantity!");
+      }
     }
   };
 
@@ -92,6 +102,30 @@ const CartView = (props) => {
     const response = await fetchApi(
       process.env.REACT_APP_DELETE_PRODUCT_FROM_CART_API + userId,
       "DELETE",
+      jsonData
+    );
+
+    const data = await response.json();
+    return data;
+  };
+
+  const sendUpdateProductQuantityInCartRequest = async (
+    userId,
+    productId,
+    quantity,
+    color,
+    size
+  ) => {
+    const jsonData = JSON.stringify({
+      productId: productId,
+      quantity: quantity,
+      color: color,
+      size: size,
+    });
+
+    const response = await fetchApi(
+      process.env.REACT_APP_UPDATE_PRODUCT_QUANTITY_CART_API + userId,
+      "PUT",
       jsonData
     );
 
@@ -158,6 +192,7 @@ const CartView = (props) => {
                                   setSelectedSize={setSelectedSize}
                                   setSelectedColor={setSelectedColor}
                                   setFormAction={setFormAction}
+                                  setNewProductQuantity={setNewProductQuantity}
                                 />
                               ))}
                             </>
