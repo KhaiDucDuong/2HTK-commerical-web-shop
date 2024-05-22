@@ -34,6 +34,7 @@ function ProductListView() {
       const fetchDataAll = async () => {
           const products = await AllProducts();
           setProductList(products);
+          console.log(products)
       };
       const fetchDataName = async (name) => {
           const products = await findProducts(name);

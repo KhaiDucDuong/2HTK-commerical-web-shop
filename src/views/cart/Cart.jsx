@@ -8,14 +8,19 @@ const CouponApplyForm = lazy(() =>
 
 const CartView = (props) => {
   const { userData } = props;
-  const [cartData, setCartData] = useState();
+  const [cartId, setcartId] = useState();
   const [isLoading, setIsLoading] = useState(true);
+  const [cartProducts, setCartProducts] = useState();
   const onSubmitApplyCouponCode = async (values) => {
     alert(JSON.stringify(values));
   };
 
   useEffect(() => {
-    fetchUserCart();
+    try {
+      fetchUserCart();
+    } catch (e) {
+      alert("Failed to load cart!");
+    }
   }, []);
 
   const fetchUserCart = async () => {
@@ -26,8 +31,9 @@ const CartView = (props) => {
       );
       const data = await response.json();
       if (data.status === 9999) {
-        setCartData(data.payload);
-        console.log(data)
+        setcartId(data.payload.id);
+        setCartProducts(data.payload.cart_products)
+        console.log(data);
       }
       setIsLoading(false);
     }
@@ -44,8 +50,8 @@ const CartView = (props) => {
         <div className="container mb-3">
           <div className="row">
             <div className="col-md-9">
-              {cartData == null && <h1>No Cart found</h1>}
-              {cartData != null && (
+              {cartId == null && <h1>No Cart found</h1>}
+              {cartId != null && (
                 <div className="card">
                   <div className="table-responsive">
                     <table className="table table-borderless">
@@ -62,10 +68,15 @@ const CartView = (props) => {
                         </tr>
                       </thead>
                       <tbody>
-                        <CartProduct />
-                        <CartProduct />
-                        <CartProduct />
-                        <CartProduct />
+                        {cartProducts == null ? (
+                          <h3 style={{marginLeft: "20px", marginTop: "10px"}}>Your cart is empty</h3>
+                        ) : (
+                          <>
+                            {cartProducts.map((product) => (
+                              <CartProduct product={product} />
+                            ))}
+                          </>
+                        )}
                       </tbody>
                     </table>
                   </div>

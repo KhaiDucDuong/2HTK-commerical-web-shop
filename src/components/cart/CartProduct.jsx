@@ -1,23 +1,25 @@
 import { Link } from "react-router-dom";
 
-const CartProduct = () => {
+const CartProduct = (props) => {
+  const { product } = props;
+
   return (
     <tr>
       <td>
         <div className="row">
           <div className="col-3 d-none d-md-block">
             <img
-              src="../../images/products/tshirt_red_480x400.webp"
+              src={product.image}
               width="80"
               alt="..."
             />
           </div>
           <div className="col">
             <Link to="/product/detail" className="text-decoration-none">
-              Another name of some product goes just here
+              {product.description}
             </Link>
             <p className="small text-muted">
-              Size: XL, Color: blue, Brand: XYZ
+              Size: {product.size}, Color: {product.color}, Brand: {"..."}
             </p>
           </div>
         </div>
@@ -27,15 +29,15 @@ const CartProduct = () => {
           <button className="btn btn-primary text-white" type="button">
             <i className="bi bi-dash-lg"></i>
           </button>
-          <input type="text" className="form-control" defaultValue="1" />
+          <input type="text" className="form-control" defaultValue={product.quantity} />
           <button className="btn btn-primary text-white" type="button">
             <i className="bi bi-plus-lg"></i>
           </button>
         </div>
       </td>
       <td>
-        <var className="price">$237.00</var>
-        <small className="d-block text-muted">$79.00 each</small>
+        <var className="price">{product.price * (1 - product.discount_percent) * product.quantity}</var>
+        <small className="d-block text-muted">{product.price} each</small>
       </td>
       <td className="text-end">
         <button className="btn btn-sm btn-outline-secondary me-2">
