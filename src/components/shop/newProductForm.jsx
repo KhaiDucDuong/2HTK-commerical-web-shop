@@ -16,6 +16,8 @@ import {
   minQuantity,
   maxPrice,
   minPrice,
+  maxLength1000,
+  email,
 } from "../../helpers/validation";
 import { ReactComponent as IconBoxSeam } from "bootstrap-icons/icons/box-seam.svg";
 import { ReactComponent as IconPallete } from "bootstrap-icons/icons/palette.svg";
@@ -152,7 +154,7 @@ const NewProductForm = (props) => {
 };
 
 export default compose(
-    reduxForm({
-      form: "newProductForm",
-    })
-  )(NewProductForm);
+  reduxForm({
+    form: "newProductForm",
+  })
+)(NewProductForm);
