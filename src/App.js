@@ -37,8 +37,7 @@ const ContactUsView = lazy(() => import("./views/pages/ContactUs"));
 const SupportView = lazy(() => import("./views/pages/Support"));
 const BlogView = lazy(() => import("./views/blog/Blog"));
 const BlogDetailView = lazy(() => import("./views/blog/Detail"));
-const NotMyShopView = lazy(() => import("./views/shop/NotMyShop"))
-
+const NotMyShopView = lazy(() => import("./views/shop/NotMyShop"));
 
 function App() {
   const [user, setUser] = useState(null);
@@ -83,7 +82,8 @@ function App() {
                 path="/account/profile"
                 element={<MyProfileView />}
               />
-              <Route
+              <Route exact path="/shop" element={<NotMyShopView />} />
+              <Route  
                 exact
                 path="/account/shop"
                 element={
@@ -95,11 +95,6 @@ function App() {
                 path="/account/shop/new"
                 element={<AddProductView userData={user} userShop={userShop} />}
               />
-              <Route
-                path="/shop"
-                element={<NotMyShopView />}
-              />
-              <Route exact path="/account/shop" element={<MyShopView userData={user}/>} />
               <Route exact path="/account/orders" element={<OrdersView />} />
               <Route
                 exact
