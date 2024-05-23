@@ -11,11 +11,11 @@ function ShopProduct(props) {
     <Card style={{ width: "290px", marginBottom: "15px" }}>
       <Card.Img variant="top" src={productImgPath} style={{width: "288px", height: "288px"}}/>
       <Card.Body>
-        <Card.Title>{product.name}</Card.Title>
+        <Card.Title style={{height: "50px", overflow: "hidden", textOverflow: "ellipsis"}}>{product.name}</Card.Title>
         <Card.Text style={{height: "75px", overflow: "hidden", marginBottom: "5px", textOverflow: "ellipsis"}}>{product.description}</Card.Text>
         <div style={{ width: "100%",display: "flex", flexDirection: "column",justifyContent: "flex-end", justifySelf: "end"}}>
         <Card.Text style={{fontStyle: "italic", marginBottom: "5px"}}>{product.productVariations[0].price}</Card.Text>
-        <Button variant="primary" >View Product</Button>
+        <Button variant="primary"  >View Product</Button>
         </div>
       </Card.Body>
     </Card>
