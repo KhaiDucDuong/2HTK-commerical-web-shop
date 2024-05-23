@@ -3,6 +3,7 @@ import { lazy, useState } from "react";
 import renderFormFileInput from "../../helpers/renderFormFileInput";
 import { Field, reduxForm } from "redux-form";
 import { required } from "../../helpers/validation";
+import { Link } from "react-router-dom";
 
 const ShopInfor = (props) => {
   const {
@@ -179,7 +180,12 @@ const ShopInfor = (props) => {
                     colSpan="4"
                   >
                     <p className="user-infor">Shop Description</p>
-                    <p className="user-infor" style={{whiteSpace: "pre-line"}}>{shopData.description}</p>
+                    <p
+                      className="user-infor"
+                      style={{ whiteSpace: "pre-line" }}
+                    >
+                      {shopData.description}
+                    </p>
                   </td>
                 </tr>
               </>
@@ -216,6 +222,7 @@ const ShopInfor = (props) => {
               <button
                 type="button"
                 className="btn btn-sm btn-danger mt-2"
+                style={{width: "75px"}}
                 onClick={() => setEditingState(false)}
               >
                 Cancel
@@ -223,24 +230,38 @@ const ShopInfor = (props) => {
               <button
                 type="submit"
                 className="btn btn-sm btn-success mt-2"
+                style={{width: "75px"}}
                 onClick={() => {
                   setSelectedForm("SHOP_INFO");
-                  setFormData(
-                    [shopNameForm, shopLocationForm, shopDescriptionForm]
-                  );
+                  setFormData([
+                    shopNameForm,
+                    shopLocationForm,
+                    shopDescriptionForm,
+                  ]);
                 }}
               >
                 Save edit
               </button>
             </>
           ) : (
-            <button
-              type="button"
-              className="btn btn-sm btn-primary mt-2"
-              onClick={() => setEditingState(true)}
-            >
-              Edit shop
-            </button>
+            <>
+              <button
+                type="button"
+                className="btn btn-sm btn-primary mt-2"
+                style={{width: "100px"}}
+                onClick={() => setEditingState(true)}
+              >
+                Edit shop
+              </button>
+              <Link
+                type="button"
+                className="btn btn-sm btn-primary mt-2"
+                style={{width: "100px"}}
+                to="/account/shop/new"
+              >
+                Add Product
+              </Link>
+            </>
           )}
         </div>
       </div>

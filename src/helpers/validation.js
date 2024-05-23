@@ -29,6 +29,9 @@ export const maxValueMobile = maxValue(999999999999999);
 export const maxValueAmount = maxValue(2147483647);
 export const maxValue127 = maxValue(127);
 export const maxValue9 = maxValue(9);
+export const maxQuantity = maxValue(9999);
+export const maxPrice = maxValue(99999999);
+
 
 const minValue = (min) => (value) =>
   value !== undefined && value !== null && value !== "" && value < min
@@ -37,6 +40,9 @@ const minValue = (min) => (value) =>
 export const minValueMobile = minValue(9999);
 export const minValue10 = minValue(10);
 export const minValue0 = minValue(0);
+export const minPrice = minValue(1);
+export const minQuantity = minValue(1);
+
 export const email = (value) =>
   value && !/^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/i.test(value)
     ? "Invalid email address"
