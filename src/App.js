@@ -111,6 +111,7 @@ function App() {
               <Route exact path="/blog/detail" element={<BlogDetailView />} />
               <Route exact path="/500" element={<InternalServerErrorView />} />
               <Route path="*" element={<NotFoundView />} />
+              <Route path="/404" element={<NotFoundView />} />
             </Routes>
           </Suspense>
           <Footer />

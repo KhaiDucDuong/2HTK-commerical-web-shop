@@ -18,7 +18,7 @@ const CardProductList = (props) => {
         <div className="col-md-6">
           <div className="card-body">
             <h6 className="card-subtitle me-2 d-inline">
-              <Link to={product.link} className="text-decoration-none">
+              <Link to={`/product/detail?product=${product._id}`} reloadDocument className="text-decoration-none">
                 {product.name}
               </Link>
             </h6>

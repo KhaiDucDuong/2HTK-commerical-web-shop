@@ -1,5 +1,7 @@
-import { lazy } from "react";
+import { lazy, useState,useEffect} from "react";
 import { data } from "../../data";
+import { Link } from "react-router-dom";
+import {GetProductByID} from "../../hooks/productApi"
 const CardFeaturedProduct = lazy(() =>
   import("../../components/card/CardFeaturedProduct")
 );
@@ -16,7 +18,29 @@ const ShippingReturns = lazy(() =>
 );
 const SizeChart = lazy(() => import("../../components/others/SizeChart"));
 
-const ProductDetailView = () => {
+function ProductDetailView() {
+  
+  let queryParameters = new URLSearchParams(window.location.search);
+  let productID = queryParameters.get("product");
+  const [loading, setLoading] = useState(true);
+  const [product,setProduct] = useState(null);
+  useEffect(() => { 
+    const fetchProduct = async (ID) => {
+      let data = await GetProductByID(ID);
+      setProduct(data);
+      setLoading(false);
+    }
+    fetchProduct(productID);
+    console.log(product);
+   }, []);
+   if (loading) {
+    return <div>Loading...</div>;
+    
+  }
+  if (!product.productVariations) {
+    return <div>No product found</div>;
+  }
+
   return (
     <div className="container-fluid mt-3">
       <div className="row">
@@ -24,9 +48,10 @@ const ProductDetailView = () => {
           <div className="row mb-3">
             <div className="col-md-5 text-center">
               <img
-                src="../../images/products/tshirt_red_480x400.webp"
+                 src={`${product.productVariations[0].image}`}
                 className="img-fluid mb-3"
                 alt=""
+                style={{ width: "400px", height: "450px" }}
               />
               <img
                 src="../../images/products/tshirt_grey_480x400.webp"
@@ -48,9 +73,13 @@ const ProductDetailView = () => {
               />
             </div>
             <div className="col-md-7">
-              <h1 className="h5 d-inline me-2">Great product name goes here</h1>
-              <span className="badge bg-success me-2">New</span>
-              <span className="badge bg-danger me-2">Hot</span>
+            <h1 className="h5 d-inline me-2">{product.name}</h1>
+            <span className="badge bg-success me-2">New</span>
+            {/* <span className="badge bg-danger me-2">Hot</span> */}
+            <div><p>Shop: <Link to={`/product/detail?product=${product._id}`} className="text-decoration-none">
+                 {product.shop_id}
+              </Link></p>
+              </div>
               <div className="mb-3">
                 <i className="bi bi-star-fill text-warning me-1" />
                 <i className="bi bi-star-fill text-warning me-1" />
@@ -139,11 +168,11 @@ const ProductDetailView = () => {
               </dl>
 
               <div className="mb-3">
-                <span className="fw-bold h5 me-2">$1900</span>
-                <del className="small text-muted me-2">$2000</del>
+              <span className="fw-bold h5 me-2">${product.productVariations[0].price}</span>
+                {/* <del className="small text-muted me-2">$2000</del>
                 <span className="rounded p-1 bg-warning  me-2 small">
                   -$100
-                </span>
+                </span> */}
               </div>
               <div className="mb-3">
                 <div className="d-inline float-start me-2">
@@ -192,11 +221,10 @@ const ProductDetailView = () => {
               <div>
                 <p className="fw-bold mb-2 small">Product Highlights</p>
                 <ul className="small">
-                  <li>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                <li>
+                    Rating by buyer: {product.averageRating}
                   </li>
-                  <li>Etiam ullamcorper nibh eget faucibus dictum.</li>
-                  <li>Cras consequat felis ut vulputate porttitor.</li>
+                  <li> Quantity remain: {product.productVariations[0].remainQuantity}</li>
                 </ul>
               </div>
             </div>
@@ -269,7 +297,7 @@ const ProductDetailView = () => {
                   role="tabpanel"
                   aria-labelledby="nav-details-tab"
                 >
-                  <Details />
+                   <Details data= {product.description} />
                 </div>
                 <div
                   className="tab-pane fade"
