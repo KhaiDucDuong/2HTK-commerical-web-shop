@@ -2,6 +2,8 @@ import { lazy, useState,useEffect} from "react";
 import { data } from "../../data";
 import { Link } from "react-router-dom";
 import {GetProductByID} from "../../hooks/productApi"
+import {GetShopbyID} from "../../hooks/shopApi"
+import "../../App.css"
 const CardFeaturedProduct = lazy(() =>
   import("../../components/card/CardFeaturedProduct")
 );
@@ -24,20 +26,30 @@ function ProductDetailView() {
   let productID = queryParameters.get("product");
   const [loading, setLoading] = useState(true);
   const [product,setProduct] = useState(null);
+  const [shop,setShop] = useState(null);
   useEffect(() => { 
-    const fetchProduct = async (ID) => {
-      let data = await GetProductByID(ID);
-      setProduct(data);
-      setLoading(false);
+    const fetchShopName = async (ID) => {
+      let datashop = await GetShopbyID(ID);
+      setShop(datashop);
     }
-    fetchProduct(productID);
-    console.log(product);
-   }, []);
+    const fetchProduct = async (proID) => {
+      let data = await GetProductByID(proID);
+      setProduct(data);
+        if (data && data.shopId) {
+          await fetchShopName(data.shopId.toString());
+        }
+        setLoading(false);
+    } 
+    if (productID) {
+      fetchProduct(productID);
+    }
+   }, [productID]);
    if (loading) {
-    return <div>Loading...</div>;
-    
+    return <div className="loader-container">
+    <div className="loader"></div>
+  </div>
   }
-  if (!product.productVariations) {
+  if (!product || !product.productVariations) {
     return <div>No product found</div>;
   }
 
@@ -77,7 +89,7 @@ function ProductDetailView() {
             <span className="badge bg-success me-2">New</span>
             {/* <span className="badge bg-danger me-2">Hot</span> */}
             <div><p>Shop: <Link to={`/product/detail?product=${product._id}`} className="text-decoration-none">
-                 {product.shop_id}
+                 {shop.name}
               </Link></p>
               </div>
               <div className="mb-3">
@@ -222,7 +234,7 @@ function ProductDetailView() {
                 <p className="fw-bold mb-2 small">Product Highlights</p>
                 <ul className="small">
                 <li>
-                    Rating by buyer: {product.averageRating}
+                    Rating by customers: {product.averageRating}
                   </li>
                   <li> Quantity remain: {product.productVariations[0].remainQuantity}</li>
                 </ul>
