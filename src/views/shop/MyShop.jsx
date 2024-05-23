@@ -67,23 +67,23 @@ const MyShopView = (props) => {
     const jsonData = JSON.stringify({
       name: values[0],
       address: values[1],
-      description: values[2]
+      description: values[2],
     });
-    
+
     try {
-      setEditingState(false)
+      setEditingState(false);
       const response = await fetchApi(
         process.env.REACT_APP_UPDATE_SHOP_INFO_API + shopData._id,
         "PUT",
         jsonData
       );
-  
+
       const data = await response.json();
       if (data.status === 9999) {
         setShopData(data.payload);
         alert("Shop Infomation has been updated!");
       } else alert(data.payload);
-    } catch (e){
+    } catch (e) {
       alert("Failed to update shop information!");
     }
   }
@@ -101,6 +101,7 @@ const MyShopView = (props) => {
       const data = await response.json();
       if (data.status === 9999) {
         setShopData(data.payload);
+        console.log(data.payload);
       }
       setIsLoading(false);
       //console.log(data.payload);
@@ -109,7 +110,18 @@ const MyShopView = (props) => {
 
   if (userData == null) return <LogInRequired />;
 
-  if (isLoading) return <h1 style={{textAlign: "center", marginTop: "100px", marginBottom: "100px"}}>Loading...</h1>;
+  if (isLoading)
+    return (
+      <h1
+        style={{
+          textAlign: "center",
+          marginTop: "100px",
+          marginBottom: "100px",
+        }}
+      >
+        Loading...
+      </h1>
+    );
 
   //fetch user's shop data
 
@@ -134,11 +146,27 @@ const MyShopView = (props) => {
               setFormData={setFormData}
             />{" "}
           </div>
-          <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-            <ShopProduct />
-            <ShopProduct />
-            <ShopProduct />
+
+          <div className="row" style={{margin: "50px"}}>
+            {shopData.products.length === 0 && (
+              <h2
+                className="text-bold col-12"
+                style={{textAlign: "center" }}
+              >
+                No products yet...
+              </h2>
+            )}
+            {shopData.products.map((product, idx) => {
+              return (
+                <div key={idx} className="col-xl-3 col-lg-4 col-md-6 col-12" style={{ display: "flex", justifyContent: "center" }}>
+                  <ShopProduct product={product} />
+                </div>
+              );
+            })}
           </div>
+
+          {/* <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+          </div> */}
         </>
       )}
     </div>
