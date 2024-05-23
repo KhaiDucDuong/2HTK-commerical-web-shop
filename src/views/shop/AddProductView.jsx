@@ -1,43 +1,32 @@
 import { lazy, useEffect, useState } from "react";
+import NoShopFoundError from "../../components/shop/NoShopFoundError";
 import LogInRequired from "../pages/LogInRequired";
 import { fetchApi } from "../../hooks/useFetch";
 import { reset } from "redux-form";
-import { Button } from "react-bootstrap";
-import SellerAplicationRow from "../../components/sellerForm/SellerApplicationRow";
-const SellerAplicationForm = lazy(() =>
-  import("../../components/sellerForm/SellerApplicationForm")
-);
+import NewProductForm from "../../components/shop/newProductForm";
+import { Link } from "react-router-dom";
 
-const SellerApplicationView = (props) => {
-  const { userData } = props;
+const AddProductView = (props) => {
+  const { userData, userShop } = props;
+  const [shopData, setShopData] = useState(userShop);
 
-  //the current tab that is display: applicationList or applicationForm
-  const [selectedTab, setSelectedTab] = useState("applicationList");
-
-  const [responseData, setResponseData] = useState(null);
-  //0 - show nothing
-  //1 - creating a seller application successfully,
-  //-1 - failed to create a seller application
-  //-2 - user isn't allowed to send another seller application
-  const [formSubmissionStatus, setFormSubmissionStatus] = useState(0);
-  //the list of seller applications the logged in user has created
-  const [userSellerApplications, setUserSellerApplications] = useState([]);
-
-  //fetch user's seller applications data on page reload
   useEffect(() => {
-    fetchUserSellerApplications();
-  }, [formSubmissionStatus]);
+    if (userShop == null) fetchUserShop();
+  }, []);
 
-  const fetchUserSellerApplications = async () => {
+  const fetchUserShop = async () => {
     if (userData != null) {
       const response = await fetchApi(
-        process.env.REACT_APP_ACCOUNT_GET_USER_SELLER_APPLICATIONS_API +
-          userData.userId,
+        process.env.REACT_APP_GET_USER_SHOP_API + userData.userId,
         "GET"
       );
       const data = await response.json();
-      setUserSellerApplications(data);
-      console.log(data);
+      if (data.status === 9999) {
+        setShopData(data.payload);
+        //console.log(data.payload);
+      } else return <NoShopFoundError />;
+      //setIsLoading(false);
+      //console.log(data.payload);
     }
   };
 
@@ -81,10 +70,10 @@ const SellerApplicationView = (props) => {
           <div className="card">
             <div className="card-header row g-3">
               <div className="col-sm-6">
-                <i className="bi bi-briefcase"></i> Seller Application
+                <i className="bi bi-box-seam-fill"></i> Add Product
               </div>
               <div className="col-sm-6 d-flex justify-content-end">
-                {selectedTab === "applicationList" && (
+                {/* {selectedTab === "applicationList" && (
                   <Button
                     className=""
                     onClick={() => setSelectedTab("applicationForm")}
@@ -99,11 +88,23 @@ const SellerApplicationView = (props) => {
                   >
                     Go Back
                   </Button>
-                )}
+                )} */}
+                <Link
+                  type="button"
+                  className="btn btn-sm btn-primary mt-2"
+                  style={{
+                    width: "100px",
+                    fontWeight: "normal",
+                    fontSize: "1.1em",
+                  }}
+                  to="/account/shop"
+                >
+                  Go Back
+                </Link>
               </div>
             </div>
             <div className="card-body">
-              {selectedTab === "applicationList" && (
+              {/* {selectedTab === "applicationList" && (
                 <div className="table-responsive">
                   <table className="table table-borderless">
                     <thead className="text-muted">
@@ -130,13 +131,11 @@ const SellerApplicationView = (props) => {
                     </tbody>
                   </table>
                 </div>
-              )}
-              {selectedTab === "applicationForm" && (
-                <SellerAplicationForm
-                  onSubmit={onSubmit}
-                  formSubmissionStatus={formSubmissionStatus}
-                />
-              )}
+              )} */}
+              <NewProductForm
+                onSubmit={onSubmit}
+                //   formSubmissionStatus={formSubmissionStatus}
+              />
             </div>
           </div>
         </div>
@@ -145,4 +144,4 @@ const SellerApplicationView = (props) => {
   );
 };
 
-export default SellerApplicationView;
+export default AddProductView;

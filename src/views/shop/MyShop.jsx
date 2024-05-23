@@ -12,7 +12,7 @@ const SellerForm = lazy(() =>
 );
 
 const MyShopView = (props) => {
-  const { userData } = props;
+  const { userData, setUserShop } = props;
   //const [hasShop, setHasShop] = useState(false);
   const [editingState, setEditingState] = useState(false);
   const [shopData, setShopData] = useState(null);
@@ -101,7 +101,8 @@ const MyShopView = (props) => {
       const data = await response.json();
       if (data.status === 9999) {
         setShopData(data.payload);
-        console.log(data.payload);
+        setUserShop(data.payload);
+        //console.log(data.payload);
       }
       setIsLoading(false);
       //console.log(data.payload);

@@ -9,6 +9,10 @@ export const digit = (value) =>
   value && !/^[0-9]*$/.test(value) ? "Must be a number" : undefined;
 const maxLength = (max) => (value) =>
   value && value.length > max ? `Must be ${max} characters or less` : undefined;
+export const maxQuantity = maxLength(9999);
+export const minQuantity = maxLength(1);
+export const maxPrice = maxLength(99999999);
+export const minPrice = maxLength(1);
 export const maxLengthOTP = maxLength(6);
 export const maxLengthMobileNo = maxLength(15);
 export const maxLength20 = maxLength(20);
