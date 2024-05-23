@@ -42,34 +42,34 @@ const SellerApplicationView = (props) => {
   };
 
   const onSubmit = async (values, dispatch) => {
-    alert(JSON.stringify(values));
+    //alert(JSON.stringify(values));
 
-    // const jsonData = JSON.stringify({
-    //   fromUser: userData.userId,
-    //   name: values.name,
-    //   phoneNumber: values.phoneNumber,
-    //   email: values.email,
-    //   applyingReason: values.applyingReason,
-    //   businessPlanDescription: values.businessPlanDescription,
-    //   images: [],
-    // });
-    // const response = await fetchApi(
-    //   process.env.REACT_APP_ACCOUNT_CREATE_SELLER_APPLICATION_API,
-    //   "POST",
-    //   jsonData
-    // );
+    const jsonData = JSON.stringify({
+      fromUser: userData.userId,
+      name: values.name,
+      phoneNumber: values.phoneNumber,
+      email: values.email,
+      applyingReason: values.applyingReason,
+      businessPlanDescription: values.businessPlanDescription,
+      images: [],
+    });
+    const response = await fetchApi(
+      process.env.REACT_APP_ACCOUNT_CREATE_SELLER_APPLICATION_API,
+      "POST",
+      jsonData
+    );
 
-    // if (response.status === 201) {
-    //   const data = await response.json();
-    //   console.log(data);
-    //   setResponseData(data);
-    //   dispatch(reset("sellerApplicationForm"));
-    //   if (data.status === 999) {
-    //     setFormSubmissionStatus(1);
-    //   } else setFormSubmissionStatus(-2);
-    // } else {
-    //   setFormSubmissionStatus(-1);
-    // }
+    if (response.status === 201) {
+      const data = await response.json();
+      console.log(data);
+      setResponseData(data);
+      dispatch(reset("sellerApplicationForm"));
+      if (data.status === 999) {
+        setFormSubmissionStatus(1);
+      } else setFormSubmissionStatus(-2);
+    } else {
+      setFormSubmissionStatus(-1);
+    }
   };
 
   if (userData == null) return <LogInRequired />;
