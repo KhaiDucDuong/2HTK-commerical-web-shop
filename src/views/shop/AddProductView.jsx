@@ -2,15 +2,20 @@ import { lazy, useEffect, useState } from "react";
 import NoShopFoundError from "../../components/shop/NoShopFoundError";
 import LogInRequired from "../pages/LogInRequired";
 import { fetchApi } from "../../hooks/useFetch";
+import { AllCategory } from "../../hooks/categoryApi";
 import { reset } from "redux-form";
 import NewProductForm from "../../components/shop/newProductForm";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const AddProductView = (props) => {
   const { userData, userShop } = props;
   const [shopData, setShopData] = useState(userShop);
+  const [categoryData, setCategoryData] = useState();
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    fetchCategory();
     if (userShop == null) fetchUserShop();
   }, []);
 
@@ -30,9 +35,60 @@ const AddProductView = (props) => {
     }
   };
 
-  const onSubmit = async (values, dispatch) => {
-    alert(JSON.stringify(values));
+  const fetchCategory = async () => {
+    const category = await AllCategory();
+    // console.log(category)
+    setCategoryData(category);
+  };
 
+  const onSubmit = async (values, dispatch) => {
+    //alert(JSON.stringify(values));
+    //console.log(shopData)
+    //console.log(JSON.stringify(values))
+    //console.log(JSON.stringify(selectedCategories))
+    let selectedCategoryIds = [];
+    selectedCategories.map((category) =>
+      selectedCategoryIds.push(category.value)
+    );
+
+    const jsonData = JSON.stringify({
+      name: values.name,
+      color: values.color != null ? values.color : "",
+      size: values.size != null ? values.size : "",
+      description: values.productDescription,
+      remainQuantity: values.remainQuantity,
+      price: values.price,
+      shop_id: shopData._id,
+      categoryIds: selectedCategoryIds,
+    });
+    console.log(jsonData);
+
+    try {
+      const response = await fetchApi(
+        process.env.REACT_APP_CREATE_PRODUCT_API,
+        "POST",
+        jsonData
+      );
+
+      const data = await response.json();
+      if (data.status === 9999) {
+        setShopData(data.payload);
+        //dispatch(reset("newProductForm"));
+        alert("Add product successfully!");
+        navigate("/account/shop")
+      } else alert(data.payload);
+    } catch (e) {
+      alert("Failed to add product!");
+    }
+    // console.log(JSON.stringify({
+    //   name: values.name,
+    //   color: (values.color!=null ? values.color : ""),
+    //   size: (values.size!=null ? values.size : ""),
+    //   remainQuantity: values.remainQuantity,
+    //   price: values.price,
+    //   shop_id: shopData._id,
+    //   categoryIds: selectedCategoryIds
+    // }))
     // const jsonData = JSON.stringify({
     //   fromUser: userData.userId,
     //   name: values.name,
@@ -60,6 +116,8 @@ const AddProductView = (props) => {
     //   setFormSubmissionStatus(-1);
     // }
   };
+
+  // async function sendAddProductRequest()
 
   if (userData == null) return <LogInRequired />;
 
@@ -134,6 +192,8 @@ const AddProductView = (props) => {
               )} */}
               <NewProductForm
                 onSubmit={onSubmit}
+                setSelectedCategories={setSelectedCategories}
+                categoryData={categoryData}
                 //   formSubmissionStatus={formSubmissionStatus}
               />
             </div>

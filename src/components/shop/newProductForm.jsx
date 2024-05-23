@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Field, reduxForm } from "redux-form";
+// import Multiselect from 'react-widgets/lib/Multiselect'
 import { compose } from "redux";
 import {
   renderFormGroupField,
   renderFormTextArea,
   renderFormCheckbox,
+  renderFormSelect,
 } from "../../helpers/renderForm";
 import {
   required,
@@ -24,8 +26,28 @@ import { ReactComponent as IconPallete } from "bootstrap-icons/icons/palette.svg
 import { ReactComponent as IconSize } from "bootstrap-icons/icons/layout-wtf.svg";
 import { ReactComponent as IconBasket } from "bootstrap-icons/icons/basket.svg";
 import { ReactComponent as IconTag } from "bootstrap-icons/icons/tag.svg";
+import ReactSelect from "react-select";
 const NewProductForm = (props) => {
-  const { handleSubmit, submitting, onSubmit, submitFailed } = props;
+  const {
+    handleSubmit,
+    submitting,
+    onSubmit,
+    submitFailed,
+    categoryData,
+    setSelectedCategories,
+  } = props;
+
+  let categoryOptions = [];
+  if (categoryData != null) {
+    categoryData.map((category) => {
+      categoryOptions.push({
+        value: category._id,
+        label: category.categoryName,
+      });
+    });
+    console.log(categoryOptions);
+  }
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -46,6 +68,24 @@ const NewProductForm = (props) => {
             maxLength="50"
             className="mb-3"
           />
+        </div>
+
+        <div className="col-md-6">
+          <React.Fragment>
+            <label
+              className={`form-label ${required ? "required" : ""}`}
+              htmlFor={"categorySelect"}
+            >
+              Categories
+            </label>
+            <ReactSelect
+              id={"categorySelect"}
+              isMulti="true"
+              options={categoryOptions}
+              required="true"
+              onChange={setSelectedCategories}
+            />
+          </React.Fragment>
         </div>
       </div>
 
@@ -122,9 +162,9 @@ const NewProductForm = (props) => {
             label="Description"
             rows={4}
             component={renderFormTextArea}
-            validate={[required, maxLength200]}
+            validate={[required, maxLength1000]}
             required={true}
-            maxLength="200"
+            maxLength="1000"
             placeholder="Briefly describe your product (200 words max)."
           />
         </div>
