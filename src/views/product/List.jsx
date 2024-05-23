@@ -1,10 +1,13 @@
 import React, { lazy, Component, useState } from "react";
 import { useEffect } from "react";
-import {fetchApi} from "../../hooks/useFetch";
-import {AllProducts} from "../../hooks/productApi"
-import {findProducts} from "../../hooks/productApi"
-import {findProductsByCategory} from "../../hooks/productApi"
-import {AllCategory} from "../../hooks/categoryApi"
+import { fetchApi } from "../../hooks/useFetch";
+import { AllProducts } from "../../hooks/productApi";
+import {
+  findProducts,
+  sendAddProductToCartRequest,
+} from "../../hooks/productApi";
+import { findProductsByCategory } from "../../hooks/productApi";
+import { AllCategory } from "../../hooks/categoryApi";
 const Paging = lazy(() => import("../../components/Paging"));
 const Breadcrumb = lazy(() => import("../../components/Breadcrumb"));
 const FilterCategory = lazy(() => import("../../components/filter/Category"));
@@ -22,89 +25,134 @@ const CardProductList = lazy(() =>
   import("../../components/card/CardProductList")
 );
 
-
-
-function ProductListView() {
+function ProductListView(props) {
+  const { userData } = props;
   const [productList, setProductList] = useState([]);
-  const [categoryList,setCategoryList] = useState([]);
-  let queryParameters = new URLSearchParams(window.location.search)
-  let productName = queryParameters.get("search")
-  let productCategory = queryParameters.get("ID")
+  const [categoryList, setCategoryList] = useState([]);
+  const [selectedProductId, setSelectedProductId] = useState();
+  const [selectedSize, setSelectedSize] = useState();
+  const [selectedColor, setSelectedColor] = useState();
+  const [formAction, setFormAction] = useState();
+  let queryParameters = new URLSearchParams(window.location.search);
+  let productName = queryParameters.get("search");
+  let productCategory = queryParameters.get("ID");
   useEffect(() => {
-      const fetchDataAll = async () => {
-          const products = await AllProducts();
-          setProductList(products);
-      };
-      const fetchDataName = async (name) => {
-          const products = await findProducts(name);
-          setProductList(products);
-      };
-      const fetchDataCategory = async (name) => {
-        const products = await findProductsByCategory(name);
-        setProductList(products);
+    const fetchDataAll = async () => {
+      const products = await AllProducts();
+      setProductList(products);
+      //console.log(products);
     };
-      const fetchCategory = async() => {
-        const category = await AllCategory();
-        setCategoryList(category);
-      };
-      if (productName != null && productCategory == null){
-        fetchDataName(productName);
-      }
-      if(productCategory != null) {
-        fetchDataCategory(productCategory);
-      }
-      if(productName == null && productCategory == null) {
-        fetchDataAll();
-      }
-      fetchCategory();
+    const fetchDataName = async (name) => {
+      const products = await findProducts(name);
+      setProductList(products);
+    };
+    const fetchDataCategory = async (name) => {
+      const products = await findProductsByCategory(name);
+      setProductList(products);
+    };
+    const fetchCategory = async () => {
+      const category = await AllCategory();
+      setCategoryList(category);
+    };
+    if (productName != null && productCategory == null) {
+      fetchDataName(productName);
+    }
+    if (productCategory != null) {
+      fetchDataCategory(productCategory);
+    }
+    if (productName == null && productCategory == null) {
+      fetchDataAll();
+    }
+    fetchCategory();
   }, []);
-    return (
-      <>
-        <div
-          className="p-5 bg-primary bs-cover"
-          style={{
-            backgroundImage: "url(../../images/banner/50-Banner.webp)",
-          }}
-        >
-          <div className="container text-center">
-            <span className="display-5 px-3 bg-white rounded shadow">
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (userData == null) {
+      alert("You must sign in first to use this feature");
+      return;
+    }
+    //console.log(formAction + " - " + selectedProductId);
+    if (formAction === "ADD_PRODUCT_TO_CART") {
+      try {
+        const responseData = await sendAddProductToCartRequest(
+          userData.userId,
+          selectedProductId,
+          1,
+          selectedColor,
+          selectedSize
+        );
+
+        // console.log(
+        //   userData.userId +
+        //     " - " +
+        //     selectedProductId +
+        //     " - " +
+        //     selectedColor +
+        //     " - " +
+        //     selectedSize
+        // );
+
+        if (responseData.status === 9999) {
+          alert("Add product to cart successfully!");
+        } else {
+          alert(responseData.payload);
+        }
+      } catch (e) {
+        alert("Falied to add product to cart!");
+      }
+    }
+  };
+
+  return (
+    <>
+      <div
+        className="p-5 bg-primary bs-cover"
+        style={{
+          backgroundImage: "url(../../images/banner/50-Banner.webp)",
+        }}
+      >
+        <div className="container text-center">
+          <span className="display-5 px-3 bg-white rounded shadow">
             All products
-            </span>
-          </div>
+          </span>
         </div>
-        <Breadcrumb />
-        <div className="container-fluid mb-3">
-          <div className="row">
-            <div className="col-md-3">
-              <FilterCategory data={categoryList} />
-              <FilterPrice />
-              <FilterSize />
-              <FilterStar />
-              <FilterColor />
-              <FilterClear />
-              <FilterTag />
-              <CardServices />
-            </div>
-            <div className="col-md-9">
-              <div className="row">
-                <div className="col-7">
-                  <span className="align-middle fw-bold">
-                    {/* {this.state.totalItems} results for{" "} */}
-                    <span className="text-warning">Seaching for: {productName}</span>
+      </div>
+      <Breadcrumb />
+      <div className="container-fluid mb-3">
+        <div className="row">
+          <div className="col-md-3">
+            <FilterCategory data={categoryList} />
+            <FilterPrice />
+            <FilterSize />
+            <FilterStar />
+            <FilterColor />
+            <FilterClear />
+            <FilterTag />
+            <CardServices />
+          </div>
+          <div className="col-md-9">
+            <div className="row">
+              <div className="col-7">
+                <span className="align-middle fw-bold">
+                  {/* {this.state.totalItems} results for{" "} */}
+                  <span className="text-warning">
+                    Seaching for: {productName}
                   </span>
-                </div>
-                <div className="col-5 d-flex justify-content-end">
-                  <select
-                    className="form-select mw-180 float-start"
-                    aria-label="Default select"
-                  >
-                    <option value={1}>Most Popular</option>
-                    <option value={2}>Latest items</option>
-                    <option value={3}>Trending</option>
-                    <option value={4}>Price low to high</option>
-                    <option value={4}>Price high to low</option>
-                  </select>
-                  {/* <div className="btn-group ms-3" role="group">
+                </span>
+              </div>
+              <div className="col-5 d-flex justify-content-end">
+                <select
+                  className="form-select mw-180 float-start"
+                  aria-label="Default select"
+                >
+                  <option value={1}>Most Popular</option>
+                  <option value={2}>Latest items</option>
+                  <option value={3}>Trending</option>
+                  <option value={4}>Price low to high</option>
+                  <option value={4}>Price high to low</option>
+                </select>
+                {/* <div className="btn-group ms-3" role="group">
                     <button
                       aria-label="Grid"
                       type="button"
@@ -130,28 +178,37 @@ function ProductListView() {
                       <i className="bi bi-list" />
                     </button>
                   </div> */}
-                </div>
               </div>
-              <hr />
-              <div className="row g-3">
-                {/* {productList.map((product, idx) => {
+            </div>
+            <hr />
+            <div className="row g-3">
+              {/* {productList.map((product, idx) => {
                     return (
                       <div key={idx} className="col-md-4">
                         <CardProductGrid data={product} />
                       </div>
                     );
                   })} */}
-                {productList.length > 0 && productList.map((product, idx) => {
+              <form onSubmit={onSubmit}>
+                {productList.length > 0 &&
+                  productList.map((product, idx) => {
                     return (
-                      <div key={idx} className="col-md-12">
-                        <CardProductList data={product} />
+                      <div key={idx} className="col-md-12 mb-3">
+                        <CardProductList
+                          data={product}
+                          setSelectedProductId={setSelectedProductId}
+                          setFormAction={setFormAction}
+                          setSelectedSize={setSelectedSize}
+                          setSelectedColor={setSelectedColor}
+                        />
                       </div>
                     );
                   })}
-              </div>
-              <hr />
-              
-              {/* <Paging
+              </form>
+            </div>
+            <hr />
+
+            {/* <Paging
                 totalRecords={this.state.totalItems}
                 pageLimit={9}
                 pageNeighbours={3}
@@ -159,11 +216,11 @@ function ProductListView() {
                 sizing=""
                 alignment="justify-content-center"
               /> */}
-            </div>
           </div>
         </div>
-        </>
-    );
-  }
+      </div>
+    </>
+  );
+}
 
 export default ProductListView;

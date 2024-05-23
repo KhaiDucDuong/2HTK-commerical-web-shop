@@ -42,7 +42,7 @@ function App() {
     const loggedInUser = localStorage.getItem("user");
     if (loggedInUser) {
       const foundUser = JSON.parse(loggedInUser);
-      console.log(foundUser)
+      //console.log(foundUser)
       setUser(foundUser);
     }
     setIsLoading(false)
@@ -90,14 +90,14 @@ function App() {
                 element={<NotificationView />}
               />
               <Route exact path="/account/seller-application" element={<SellerApplication userData={user} />} />
-              <Route exact path="/category" element={<ProductListView />} />
+              <Route exact path="/category" element={<ProductListView userData={user} />} />
               <Route
                 exact
                 path="/product/detail"
                 element={<ProductDetailView />}
               />
               <Route exact path="/star/zone" element={<StarZoneView />} />
-              <Route exact path="/cart" element={<CartView />} />
+              <Route exact path="/cart" element={<CartView userData={user} />} />
               <Route exact path="/checkout" element={<CheckoutView />} />
               <Route exact path="/invoice" element={<InvoiceView />} />
               <Route
