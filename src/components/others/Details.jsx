@@ -1,15 +1,13 @@
 import React from "react";
 
 const Details = (props) => {
+  let description = props.data 
   return (
     <React.Fragment>
       <p>
-        Lorem Ipsum is simply dummy text of the printing and typesetting
-        industry. Lorem Ipsum has been the industry's standard dummy text ever
-        since the 1500s, when an unknown printer took a galley of type and
-        scrambled it to make a type specimen book.
+        {description}
       </p>
-      <details>
+      {/* <details>
         <summary>Even more details</summary>
         <p>Here are even more details about the details.</p>
       </details>
@@ -28,7 +26,7 @@ const Details = (props) => {
         <dd>Donec id elit non mi porta gravida at eget metus.</dd>
         <dt>Malesuada porta</dt>
         <dd>Etiam porta sem malesuada magna mollis euismod.</dd>
-      </dl>
+      </dl> */}
     </React.Fragment>
   );
 };

@@ -17,7 +17,6 @@ const CartProduct = (props) => {
   function currencyFormat(num) {
     return "$" + num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
   }
-
   return (
     <tr>
       <td>
@@ -26,7 +25,7 @@ const CartProduct = (props) => {
             <img src={product.image} width="80" alt="..." />
           </div>
           <div className="col">
-            <Link to="/product/detail" className="text-decoration-none">
+            <Link to={`/product/detail?product=${product.id}`} className="text-decoration-none">
               {product.name}
             </Link>
             <p className="small text-muted">

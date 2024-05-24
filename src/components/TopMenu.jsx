@@ -79,7 +79,7 @@ const TopMenu = () => {
                 </li>
               </ul>
             </li>
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <Link className="nav-link" to="/category">
                 Fashion
               </Link>
@@ -113,7 +113,7 @@ const TopMenu = () => {
               <Link className="nav-link" to="/documentation">
                 Documentation
               </Link>
-            </li>
+            </li> */}
           </ul>
         </div>
       </div>

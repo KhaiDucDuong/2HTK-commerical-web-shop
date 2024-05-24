@@ -52,3 +52,15 @@ export async function sendAddProductToCartRequest(
   const data = await response.json();
   return data;
 }
+
+export async function GetProductByID(ID) {
+  let url = `http://localhost:8080/api/products/detail?product=` + ID;
+  try {
+  const product = await fetchData(url);
+  return product;
+  }
+  catch (error) {
+    console.log("error", error);
+    return [];
+  }
+}

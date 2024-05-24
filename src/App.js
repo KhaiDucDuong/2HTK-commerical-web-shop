@@ -9,6 +9,7 @@ import Footer from "./components/Footer";
 import "./App.min.css";
 import { useState } from "react";
 import { useEffect } from "react";
+import AddProductView from "./views/shop/AddProductView";
 //const Header = lazy(() => import("./components/Header"));
 //const TopMenu = lazy(() => import("./components/TopMenu"));
 const HomeView = lazy(() => import("./views/Home"));
@@ -19,7 +20,9 @@ const OrdersView = lazy(() => import("./views/account/Orders"));
 const WishlistView = lazy(() => import("./views/account/Wishlist"));
 const NotificationView = lazy(() => import("./views/account/Notification"));
 const MyProfileView = lazy(() => import("./views/account/MyProfile"));
-const SellerApplication = lazy(() => import("./views/account/SellerApplication"));
+const SellerApplication = lazy(() =>
+  import("./views/account/SellerApplication")
+);
 const MyShopView = lazy(() => import("./views/shop/MyShop"));
 const ProductListView = lazy(() => import("./views/product/List"));
 const ProductDetailView = lazy(() => import("./views/product/Detail"));
@@ -34,9 +37,11 @@ const ContactUsView = lazy(() => import("./views/pages/ContactUs"));
 const SupportView = lazy(() => import("./views/pages/Support"));
 const BlogView = lazy(() => import("./views/blog/Blog"));
 const BlogDetailView = lazy(() => import("./views/blog/Detail"));
+const NotMyShopView = lazy(() => import("./views/shop/NotMyShop"));
 
 function App() {
   const [user, setUser] = useState(null);
+  const [userShop, setUserShop] = useState();
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const loggedInUser = localStorage.getItem("user");
@@ -44,15 +49,16 @@ function App() {
       const foundUser = JSON.parse(loggedInUser);
       //console.log(foundUser)
       setUser(foundUser);
+      //console.log(userShop)
     }
-    setIsLoading(false)
+    setIsLoading(false);
   }, []);
 
   return (
     <BrowserRouter>
       {!isLoading ? (
         <React.Fragment>
-          <Header user={user} setUser={setUser}/>
+          <Header user={user} setUser={setUser} />
           <TopMenu />
           <Suspense
             fallback={
@@ -77,7 +83,19 @@ function App() {
                 path="/account/profile"
                 element={<MyProfileView />}
               />
-              <Route exact path="/account/shop" element={<MyShopView userData={user}/>} />
+              <Route exact path="/shop" element={<NotMyShopView />} />
+              <Route
+                exact
+                path="/account/shop"
+                element={
+                  <MyShopView userData={user} setUserShop={setUserShop} userShop={userShop} />
+                }
+              />
+              <Route
+                exact
+                path="/account/shop/new"
+                element={<AddProductView userData={user} userShop={userShop} />}
+              />
               <Route exact path="/account/orders" element={<OrdersView />} />
               <Route
                 exact
@@ -89,15 +107,29 @@ function App() {
                 path="/account/notification"
                 element={<NotificationView />}
               />
-              <Route exact path="/account/seller-application" element={<SellerApplication userData={user} />} />
-              <Route exact path="/category" element={<ProductListView userData={user} />} />
+              <Route
+                exact
+                path="/account/seller-application"
+                element={<SellerApplication userData={user} />}
+              />
+              <Route
+                exact
+                path="/category"
+                element={<ProductListView userData={user} />}
+              />
               <Route
                 exact
                 path="/product/detail"
-                element={<ProductDetailView />}
+                element={
+                  <ProductDetailView userData={user} userShop={userShop} />
+                }
               />
               <Route exact path="/star/zone" element={<StarZoneView />} />
-              <Route exact path="/cart" element={<CartView userData={user} />} />
+              <Route
+                exact
+                path="/cart"
+                element={<CartView userData={user} />}
+              />
               <Route exact path="/checkout" element={<CheckoutView />} />
               <Route exact path="/invoice" element={<InvoiceView />} />
               <Route
@@ -111,6 +143,7 @@ function App() {
               <Route exact path="/blog/detail" element={<BlogDetailView />} />
               <Route exact path="/500" element={<InternalServerErrorView />} />
               <Route path="*" element={<NotFoundView />} />
+              <Route path="/404" element={<NotFoundView />} />
             </Routes>
           </Suspense>
           <Footer />
