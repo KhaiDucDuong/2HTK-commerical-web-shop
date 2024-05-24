@@ -1,9 +1,9 @@
-import { lazy, useState,useEffect} from "react";
+import { lazy, useState, useEffect } from "react";
 import { data } from "../../data";
 import { Link } from "react-router-dom";
-import {GetProductByID} from "../../hooks/productApi"
-import {GetShopbyID} from "../../hooks/shopApi"
-import "../../App.css"
+import { GetProductByID } from "../../hooks/productApi";
+import { GetShopbyID, fetchUserShop } from "../../hooks/shopApi";
+import "../../App.css";
 const CardFeaturedProduct = lazy(() =>
   import("../../components/card/CardFeaturedProduct")
 );
@@ -20,34 +20,61 @@ const ShippingReturns = lazy(() =>
 );
 const SizeChart = lazy(() => import("../../components/others/SizeChart"));
 
-function ProductDetailView() {
-  
+function ProductDetailView(props) {
+  const { userData, userShop } = props;
   let queryParameters = new URLSearchParams(window.location.search);
   let productID = queryParameters.get("product");
   const [loading, setLoading] = useState(true);
-  const [product,setProduct] = useState(null);
-  const [shop,setShop] = useState(null);
-  useEffect(() => { 
+  const [product, setProduct] = useState(null);
+  const [shop, setShop] = useState(null);
+  const [userShopId, setUserShopId] = useState(null);
+  const [isOwner, setIsOwner] = useState(false);
+  const [selectedVariation, setSelectedVariation] = useState();
+  const [selectedVariationIndex, setSelectedVariationIndex] = useState(0);
+
+  useEffect(() => {
     const fetchShopName = async (ID) => {
       let datashop = await GetShopbyID(ID);
       setShop(datashop);
-    }
+    };
+
+    const fetchUseruserShopData = async () => {
+      if (userData != null) {
+        const responseData = await fetchUserShop(userData.userId);
+        if (responseData.status === 9999) {
+          setUserShopId(responseData.payload._id);
+          //setUserShop(responseData.payload);
+          //console.log(data.payload);
+        }
+        //setIsLoading(false);
+        //console.log(data.payload);
+      }
+    };
+
     const fetchProduct = async (proID) => {
       let data = await GetProductByID(proID);
       setProduct(data);
-        if (data && data.shopId) {
-          await fetchShopName(data.shopId.toString());
-        }
-        setLoading(false);
-    } 
+      setSelectedVariation(
+        data.productVariations[0].size + "_" + data.productVariations[0].color
+      );
+      if (data && data.shopId) {
+        await fetchShopName(data.shopId.toString());
+      }
+      setLoading(false);
+    };
+
     if (productID) {
       fetchProduct(productID);
+      fetchUseruserShopData();
     }
-   }, [productID]);
-   if (loading) {
-    return <div className="loader-container">
-    <div className="loader"></div>
-  </div>
+  }, [productID]);
+
+  if (loading) {
+    return (
+      <div className="loader-container">
+        <div className="loader"></div>
+      </div>
+    );
   }
   if (!product || !product.productVariations) {
     return <div>No product found</div>;
@@ -55,12 +82,13 @@ function ProductDetailView() {
 
   return (
     <div className="container-fluid mt-3">
+      <h1>{shop._id === userShopId ? "OWNER" : "FOREIGNER"}</h1>
       <div className="row">
         <div className="col-md-8">
           <div className="row mb-3">
             <div className="col-md-5 text-center">
               <img
-                 src={`${product.productVariations[0].image}`}
+                src={`${product.productVariations[selectedVariationIndex].image}`}
                 className="img-fluid mb-3"
                 alt=""
                 style={{ width: "400px", height: "450px" }}
@@ -85,12 +113,19 @@ function ProductDetailView() {
               />
             </div>
             <div className="col-md-7">
-            <h1 className="h5 d-inline me-2">{product.name}</h1>
-            <span className="badge bg-success me-2">New</span>
-            {/* <span className="badge bg-danger me-2">Hot</span> */}
-            <div><p>Shop: <Link to={`/product/detail?product=${product._id}`} className="text-decoration-none">
-                 {shop.name}
-              </Link></p>
+              <h1 className="h5 d-inline me-2">{product.name}</h1>
+              <span className="badge bg-success me-2">New</span>
+              {/* <span className="badge bg-danger me-2">Hot</span> */}
+              <div>
+                <p>
+                  Shop:{" "}
+                  <Link
+                    to={`/product/detail?product=${product._id}`}
+                    className="text-decoration-none"
+                  >
+                    {shop.name}
+                  </Link>
+                </p>
               </div>
               <div className="mb-3">
                 <i className="bi bi-star-fill text-warning me-1" />
@@ -104,24 +139,50 @@ function ProductDetailView() {
               </div>
               <dl className="row small mb-3">
                 <dt className="col-sm-3">Availability</dt>
-                <dd className="col-sm-9">In stock</dd>
+                <dd className="col-sm-9">
+                  {product.isAvailable ? "In Stock" : "Out of Stock"}
+                </dd>
                 <dt className="col-sm-3">Sold by</dt>
                 <dd className="col-sm-9">Authorised Store</dd>
-                <dt className="col-sm-3">Size</dt>
+                <dt className="col-sm-3">Variation</dt>
+                {/* <h3>{JSON.stringify(product.productVariations)}</h3> */}
                 <dd className="col-sm-9">
-                  <div className="form-check form-check-inline">
-                    <input
-                      className="form-check-input"
-                      type="radio"
-                      name="size"
-                      id="sizes"
-                      disabled
-                    />
-                    <label className="form-check-label" htmlFor="sizes">
-                      S
-                    </label>
-                  </div>
-                  <div className="form-check form-check-inline">
+                  {product.productVariations.map((variation, index) => {
+                    return (
+                      <div className="form-check form-check-inline">
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          name={variation.size + "_" + variation.color}
+                          value={index}
+                          key={index}
+                          checked={
+                            variation.size + "_" + variation.color ===
+                            selectedVariation
+                          }
+                          onChange={(e) => {
+                            setSelectedVariation(
+                              product.productVariations[e.target.value].size +
+                                "_" +
+                                product.productVariations[e.target.value].color
+                            );
+                            setSelectedVariationIndex(e.target.value)
+                            //console.log(e.target)
+                          }}
+                          id="size_color_input"
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor={index}
+                          value={index}
+                          key={index}
+                        >
+                          {variation.size + " " + variation.color}
+                        </label>
+                      </div>
+                    );
+                  })}
+                  {/* <div className="form-check form-check-inline">
                     <input
                       className="form-check-input"
                       type="radio"
@@ -165,9 +226,9 @@ function ProductDetailView() {
                     <label className="form-check-label" htmlFor="sizexxl">
                       XXL
                     </label>
-                  </div>
+                  </div> */}
                 </dd>
-                <dt className="col-sm-3">Color</dt>
+                {/* <dt className="col-sm-3">Color</dt>
                 <dd className="col-sm-9">
                   <button className="btn btn-sm btn-primary p-2 me-2"></button>
                   <button className="btn btn-sm btn-secondary p-2 me-2"></button>
@@ -176,11 +237,13 @@ function ProductDetailView() {
                   <button className="btn btn-sm btn-warning p-2 me-2"></button>
                   <button className="btn btn-sm btn-info p-2 me-2"></button>
                   <button className="btn btn-sm btn-dark p-2 me-2"></button>
-                </dd>
+                </dd> */}
               </dl>
 
               <div className="mb-3">
-              <span className="fw-bold h5 me-2">${product.productVariations[0].price}</span>
+                <span className="fw-bold h5 me-2">
+                  ${product.productVariations[selectedVariationIndex].price}
+                </span>
                 {/* <del className="small text-muted me-2">$2000</del>
                 <span className="rounded p-1 bg-warning  me-2 small">
                   -$100
@@ -233,10 +296,15 @@ function ProductDetailView() {
               <div>
                 <p className="fw-bold mb-2 small">Product Highlights</p>
                 <ul className="small">
-                <li>
-                    Rating by customers: {product.averageRating}
+                  <li>Rating by customers: {product.averageRating}</li>
+                  <li>
+                    {" "}
+                    Quantity remain:{" "}
+                    {
+                      product.productVariations[selectedVariationIndex]
+                        .remainQuantity
+                    }
                   </li>
-                  <li> Quantity remain: {product.productVariations[0].remainQuantity}</li>
                 </ul>
               </div>
             </div>
@@ -309,7 +377,10 @@ function ProductDetailView() {
                   role="tabpanel"
                   aria-labelledby="nav-details-tab"
                 >
-                   <Details data= {product.description} />
+                  <p style={{ whiteSpace: "pre-line" }}>
+                    {product.description}
+                  </p>
+                  {/* <Details data={product.description} /> */}
                 </div>
                 <div
                   className="tab-pane fade"
@@ -360,6 +431,6 @@ function ProductDetailView() {
       </div>
     </div>
   );
-};
+}
 
 export default ProductDetailView;
