@@ -1,5 +1,6 @@
 import { lazy, useState, useEffect } from "react";
 import { fetchApi } from "../../hooks/useFetch";
+import { fetchUserShop } from "../../hooks/shopApi";
 const LogInRequired = lazy(() => import("../pages/LogInRequired"));
 const NoShopFoundError = lazy(() =>
   import("../../components/shop/NoShopFoundError")
@@ -12,10 +13,11 @@ const SellerForm = lazy(() =>
 );
 
 const MyShopView = (props) => {
-  const { userData, setUserShop } = props;
+  const { userData, userShop, setUserShop } = props;
   //const [hasShop, setHasShop] = useState(false);
   const [editingState, setEditingState] = useState(false);
-  const [shopData, setShopData] = useState(null);
+  //const [shopData, setShopData] = useState(userShop);
+  const [shopData, setShopData] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [selectedForm, setSelectedForm] = useState("SHOP_INFO"); //SHOP_IMG & SHOP_INFO
   const [formData, setFormData] = useState();
@@ -89,19 +91,34 @@ const MyShopView = (props) => {
   }
 
   useEffect(() => {
-    fetchUserShop();
+    //console.log(shopData)
+    //if (shopData == null)
+    fetchUserShopData();
   }, []);
 
-  const fetchUserShop = async () => {
+  // const fetchUserShop = async () => {
+  //   if (userData != null) {
+  //     const response = await fetchApi(
+  //       process.env.REACT_APP_GET_USER_SHOP_API + userData.userId,
+  //       "GET"
+  //     );
+  //     const data = await response.json();
+  //     if (data.status === 9999) {
+  //       setShopData(data.payload);
+  //       setUserShop(data.payload);
+  //       //console.log(data.payload);
+  //     }
+  //     setIsLoading(false);
+  //     //console.log(data.payload);
+  //   }
+  // };
+
+  const fetchUserShopData = async () => {
     if (userData != null) {
-      const response = await fetchApi(
-        process.env.REACT_APP_GET_USER_SHOP_API + userData.userId,
-        "GET"
-      );
-      const data = await response.json();
-      if (data.status === 9999) {
-        setShopData(data.payload);
-        setUserShop(data.payload);
+      const responseData = await fetchUserShop(userData.userId);
+      if (responseData.status === 9999) {
+        setShopData(responseData.payload);
+        setUserShop(responseData.payload);
         //console.log(data.payload);
       }
       setIsLoading(false);
@@ -148,18 +165,19 @@ const MyShopView = (props) => {
             />{" "}
           </div>
 
-          <div className="row" style={{margin: "50px"}}>
+          <div className="row" style={{ margin: "50px" }}>
             {shopData.products.length === 0 && (
-              <h2
-                className="text-bold col-12"
-                style={{textAlign: "center" }}
-              >
+              <h2 className="text-bold col-12" style={{ textAlign: "center" }}>
                 No products yet...
               </h2>
             )}
             {shopData.products.map((product, idx) => {
               return (
-                <div key={idx} className="col-xl-3 col-lg-4 col-md-6 col-12" style={{ display: "flex", justifyContent: "center" }}>
+                <div
+                  key={idx}
+                  className="col-xl-3 col-lg-4 col-md-6 col-12"
+                  style={{ display: "flex", justifyContent: "center" }}
+                >
                   <ShopProduct product={product} />
                 </div>
               );

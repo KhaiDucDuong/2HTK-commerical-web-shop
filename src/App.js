@@ -49,6 +49,7 @@ function App() {
       const foundUser = JSON.parse(loggedInUser);
       //console.log(foundUser)
       setUser(foundUser);
+      //console.log(userShop)
     }
     setIsLoading(false);
   }, []);
@@ -83,11 +84,11 @@ function App() {
                 element={<MyProfileView />}
               />
               <Route exact path="/shop" element={<NotMyShopView />} />
-              <Route  
+              <Route
                 exact
                 path="/account/shop"
                 element={
-                  <MyShopView userData={user} setUserShop={setUserShop} />
+                  <MyShopView userData={user} setUserShop={setUserShop} userShop={userShop} />
                 }
               />
               <Route
@@ -119,7 +120,9 @@ function App() {
               <Route
                 exact
                 path="/product/detail"
-                element={<ProductDetailView />}
+                element={
+                  <ProductDetailView userData={user} userShop={userShop} />
+                }
               />
               <Route exact path="/star/zone" element={<StarZoneView />} />
               <Route
