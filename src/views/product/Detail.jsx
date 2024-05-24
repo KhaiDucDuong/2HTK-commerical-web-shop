@@ -93,24 +93,6 @@ function ProductDetailView(props) {
                 alt=""
                 style={{ width: "400px", height: "450px" }}
               />
-              <img
-                src="../../images/products/tshirt_grey_480x400.webp"
-                className="border border-secondary me-2"
-                width="75"
-                alt="..."
-              />
-              <img
-                src="../../images/products/tshirt_black_480x400.webp"
-                className="border border-secondary me-2"
-                width="75"
-                alt="..."
-              />
-              <img
-                src="../../images/products/tshirt_green_480x400.webp"
-                className="border border-secondary me-2"
-                width="75"
-                alt="..."
-              />
             </div>
             <div className="col-md-7">
               <h1 className="h5 d-inline me-2">{product.name}</h1>
