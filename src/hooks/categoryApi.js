@@ -10,7 +10,7 @@ async function fetchData(url) {
 }
 
 export async function AllCategory() {
-    let url = `http://localhost:8080/api/category`;
+    let url = `http://3.147.78.250:8080/api/category`;
     const Category = await fetchData(url);
     return Category;
 }

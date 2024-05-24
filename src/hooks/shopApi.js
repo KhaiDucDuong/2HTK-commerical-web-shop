@@ -12,7 +12,7 @@ async function fetchData(url) {
 }
 
 export async function GetShopbyID(ID) {
-  let url = `http://localhost:8080/api/shops?ID=` + ID;
+  let url = `http://3.147.78.250:8080/api/shops?ID=` + ID;
   const Shop = await fetchData(url);
   return Shop;
 }
