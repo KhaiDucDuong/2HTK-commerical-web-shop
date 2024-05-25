@@ -223,6 +223,7 @@ const CartView = (props) => {
                         to="/checkout"
                         state={{
                           cartProducts: selectedProducts,
+                          userData: userData,
                           // .forEach(
                           //   (product, i) => {
                           //     if(selectedProducts[i])
