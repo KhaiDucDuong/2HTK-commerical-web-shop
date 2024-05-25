@@ -96,7 +96,7 @@ function App() {
                 path="/account/shop/new"
                 element={<AddProductView userData={user} userShop={userShop} />}
               />
-              <Route exact path="/account/orders" element={<OrdersView />} />
+              <Route exact path="/account/orders" element={<OrdersView userData={user} />} />
               <Route
                 exact
                 path="/account/wishlist"
@@ -130,7 +130,7 @@ function App() {
                 path="/cart"
                 element={<CartView userData={user} />}
               />
-              <Route exact path="/checkout" element={<CheckoutView />} />
+              <Route exact path="/checkout" element={<CheckoutView />}/>
               <Route exact path="/invoice" element={<InvoiceView />} />
               <Route
                 exact

@@ -1,6 +1,6 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./cart-product.css";
-import { useState } from "react";
 
 const CartProduct = (props) => {
   const {
@@ -9,14 +9,28 @@ const CartProduct = (props) => {
     setSelectedSize,
     setSelectedColor,
     setFormAction,
-    setNewProductQuantity
+    setNewProductQuantity,
   } = props;
 
   const [productQuantity, setProductQuantity] = useState(product.quantity);
+  const [isChecked, setIsChecked] = useState(false);
+  const [selectedProducts, setSelectedProducts] = useState([]); // Khởi tạo selectedProducts là một mảng trống
 
   function currencyFormat(num) {
     return "$" + num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
   }
+
+  const handleCheckboxChange = (e) => {
+    setIsChecked(e.target.checked);
+
+    if (e.target.checked) {
+      setSelectedProducts([...selectedProducts, product]);
+    } else {
+      setSelectedProducts(selectedProducts.filter((p) => p.id !== product.id));
+    }
+
+  };
+
   return (
     <tr>
       <td>
@@ -25,9 +39,19 @@ const CartProduct = (props) => {
             <img src={product.image} width="80" alt="..." />
           </div>
           <div className="col">
-            <Link to={`/product/detail?product=${product.id}`} className="text-decoration-none">
-              {product.name}
-            </Link>
+            <label>
+              <input
+                type="checkbox"
+                checked={isChecked}
+                onChange={handleCheckboxChange}
+              />
+              <Link
+                to={`/product/detail?product=${product.id}`}
+                className="text-decoration-none"
+              >
+                {product.name}
+              </Link>
+            </label>
             <p className="small text-muted">
               Size: {product.size}, Color: {product.color}, Brand: {"..."}
             </p>
@@ -74,17 +98,6 @@ const CartProduct = (props) => {
       </td>
       <td className="text-end" style={{ minWidth: "150px" }}>
         <button
-          type="button"
-          className="btn btn-sm me-2 btn-outline-primary same-background-forever"
-        >
-          <input
-            class="form-check-input select-product-input"
-            type="checkbox"
-            defaultChecked="true"
-            id="product-check-box"
-          />
-        </button>
-        <button
           type="submit"
           className="btn btn-sm btn-outline-secondary me-2"
           onClick={() => {
@@ -92,7 +105,7 @@ const CartProduct = (props) => {
             setSelectedProductId(product.id);
             setSelectedColor(product.color);
             setSelectedSize(product.size);
-            setNewProductQuantity(productQuantity)
+            setNewProductQuantity(productQuantity);
           }}
         >
           Save

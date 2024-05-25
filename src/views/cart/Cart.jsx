@@ -1,8 +1,9 @@
-import { lazy, useEffect, useState } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import CartProduct from "../../components/cart/CartProduct";
 import { fetchApi } from "../../hooks/useFetch";
 import LogInRequired from "../pages/LogInRequired";
+import { useNavigate, Navigate } from 'react-router-dom';
 const CouponApplyForm = lazy(() =>
   import("../../components/others/CouponApplyForm")
 );
@@ -17,8 +18,16 @@ const CartView = (props) => {
   const [selectedColor, setSelectedColor] = useState();
   const [newProductQuantity, setNewProductQuantity] = useState()
   const [formAction, setFormAction] = useState();
+  const [selectedProducts, setSelectedProducts] = useState([]);
   const onSubmitApplyCouponCode = async (values) => {
     alert(JSON.stringify(values));
+  };
+
+  const navigate = useNavigate();
+  const handleCheckout = () => {
+    // Chuyển hướng đến trang thanh toán và truyền danh sách sản phẩm đã chọn
+    navigate("/checkout", { state: { selectedProducts } });
+    // return <Navigate to="/checkout" selectedProducts={selectedProducts}/>
   };
 
   useEffect(() => {
@@ -184,9 +193,9 @@ const CartView = (props) => {
                               Your cart is empty
                             </h3>
                           ) : (
-                            <>
-                              {cartProducts.map((product) => (
+                              cartProducts.map((product) => (
                                 <CartProduct
+                                  key={product.id}
                                   product={product}
                                   setSelectedProductId={setSelectedProductId}
                                   setSelectedSize={setSelectedSize}
@@ -194,19 +203,15 @@ const CartView = (props) => {
                                   setFormAction={setFormAction}
                                   setNewProductQuantity={setNewProductQuantity}
                                 />
-                              ))}
-                            </>
+                              ))
                           )}
                         </tbody>
                       </table>
                     </div>
                     <div className="card-footer">
-                      <Link
-                        to="/checkout"
-                        className="btn btn-primary float-end"
-                      >
+                      <button className="btn btn-primary float-end" onClick={handleCheckout}>
                         Make Purchase <i className="bi bi-chevron-right"></i>
-                      </Link>
+                      </button>
                       <Link to="/" className="btn btn-secondary">
                         <i className="bi bi-chevron-left"></i> Continue shopping
                       </Link>
