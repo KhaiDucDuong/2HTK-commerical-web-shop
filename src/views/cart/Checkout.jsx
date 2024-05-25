@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import OrderProduct from "../../components/cart/OrderProduct";
 import VoucherModal from "../../components/cart/VoucherModal";
+import { fetchApi } from "../../hooks/useFetch";
 
 const CheckoutView = () => {
   const location = useLocation();
-  const { cartProducts } = location.state || {};
+  const navigate = useNavigate();
+  const { cartProducts, userData } = location.state || {};
   const productList = cartProducts;
   const [isProductIndexesSelected, setIsProductIndexesSelected] = useState(
     new Array(productList.length).fill(true)
@@ -45,15 +47,34 @@ const CheckoutView = () => {
     return "$" + num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
   }
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    productList.forEach((product, index) => {
-      if (isProductIndexesSelected[index]) console.log(product);
+    const jsonData = JSON.stringify({
+      selectedProductLists: productList,
+      voucherNames: [],
     });
+    console.log(jsonData)
+
+    try {
+      const response = await fetchApi(
+        process.env.REACT_APP_CREATE_ORDER_API + userData.userId,
+        "POST",
+        jsonData
+      );
+
+      const data = await response.json();
+      if (data.status === 9999) {
+        alert("Create an order successfully!");
+        navigate("/cart");
+      } else alert(data.payload);
+    } catch (e) {
+      alert("Failed to create an order!");
+    }
   };
 
   return (
     <div>
+      <p>{JSON.stringify(productList)}</p>
       <div className="bg-secondary border-top p-4 text-white mb-3">
         <h1 className="display-6 text-center">Checkout</h1>
       </div>
