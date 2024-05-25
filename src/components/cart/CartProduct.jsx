@@ -23,11 +23,12 @@ const CartProduct = (props) => {
   const handleCheckboxChange = (e) => {
     setIsChecked(e.target.checked);
 
-    if (e.target.checked) {
+    if (isChecked) {
       setSelectedProducts([...selectedProducts, product]);
     } else {
       setSelectedProducts(selectedProducts.filter((p) => p.id !== product.id));
     }
+    console.log(selectedProducts);
 
   };
 

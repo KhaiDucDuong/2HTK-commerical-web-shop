@@ -3,12 +3,12 @@ import { useLocation } from "react-router-dom";
 import OrderProduct from "../../components/cart/OrderProduct";
 import VoucherModal from "../../components/cart/VoucherModal";
 
-const CheckoutView = (props) => {
+const CheckoutView = () => {
   const location = useLocation();
-  const {selectedProducts} = location.state || [];
+  const { cartProducts } = location.state || {};
 
   // const {selectedProducts} = props
-  console.log(selectedProducts)
+
   const [showVoucherWindow, setShowVoucherWindow] = useState(false);
   const voucherModalRef = useRef(null);
 
@@ -78,10 +78,10 @@ const CheckoutView = (props) => {
                     </tr>
                   </thead>
                   <tbody>
-                    { selectedProducts && 
-                    selectedProducts.map((product, index) => (
-                      <OrderProduct key={index} product={product} />
-                    ))}
+                    {cartProducts &&
+                      cartProducts.map((product, index) => (
+                        <OrderProduct key={index} product={product} />
+                      ))}
                     <tr>
                       <td colSpan="3" className="text-end">Shipping Fee:</td>
                       <td className="text-end" colSpan="1">$10</td>
@@ -161,58 +161,58 @@ const CheckoutView = (props) => {
                 </div>
                 <div className="row g-3">
                   <div className="col-md-6">
-                  <input
-                   type="text"
-                   className="form-control"
-                   placeholder="Name on card"
-                   required
-                 />
-</div>
-<div className="col-md-6">
-<input
-                   type="number"
-                   className="form-control"
-                   placeholder="Card number"
-                   required
-                 />
-</div>
-<div className="col-md-4">
-<input
-                   type="number"
-                   className="form-control"
-                   placeholder="Expiration month"
-                   required
-                 />
-</div>
-<div className="col-md-4">
-<input
-                   type="number"
-                   className="form-control"
-                   placeholder="Expiration year"
-                   required
-                 />
-</div>
-<div className="col-md-4">
-<input
-                   type="number"
-                   className="form-control"
-                   placeholder="CVV"
-                   required
-                 />
-</div>
-</div>
-</div>
-<div className="card-footer border-info d-grid">
-<button type="button" className="btn btn-info">
-Pay Now <strong>$162</strong>
-</button>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-);
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Name on card"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <input
+                      type="number"
+                      className="form-control"
+                      placeholder="Card number"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-4">
+                    <input
+                      type="number"
+                      className="form-control"
+                      placeholder="Expiration month"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-4">
+                    <input
+                      type="number"
+                      className="form-control"
+                      placeholder="Expiration year"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-4">
+                    <input
+                      type="number"
+                      className="form-control"
+                      placeholder="CVV"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="card-footer border-info d-grid">
+                <button type="button" className="btn btn-info">
+                  Pay Now <strong>$162</strong>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default CheckoutView;

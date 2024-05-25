@@ -18,6 +18,21 @@ const OrdersView = (props) => {
 
     fetchOrders();
   }, []);
+  
+  const getStatus = (statetusType) => {
+    switch (statetusType) {
+      case "1":
+        return "WAITING";
+      case "2":
+        return "ACCEPTED";
+      case "PENDING":
+        return "badge bg-secondary";
+      case "DELIVERED":
+        return "badge bg-success";
+      default:
+        return { color: "black", fontSize: "1.2em" };
+    }
+  };
 
   return (
     <div className="container mb-3">
@@ -60,7 +75,7 @@ const OrdersView = (props) => {
                     </h6>
                     {order.productList && order.productList.map((product, index) => (
                       <div key={index} className="small">
-                        <span className="text-muted me-2">Product ID:</span>
+                        <span className="text-muted me-2">Product:</span>
                         <span className="me-3">{product.productId}</span>
                         <span className="text-muted me-2">Size:</span>
                         <span className="me-3">{product.size}</span>

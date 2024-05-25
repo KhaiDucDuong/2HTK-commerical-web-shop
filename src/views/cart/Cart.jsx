@@ -22,12 +22,19 @@ const CartView = (props) => {
   const onSubmitApplyCouponCode = async (values) => {
     alert(JSON.stringify(values));
   };
+  const [form, setForm]= useState({
+    productId:"",
+    quantity:"",
+    color:"",
+    size:""
+
+  });
 
   const navigate = useNavigate();
+  
   const handleCheckout = () => {
     // Chuyển hướng đến trang thanh toán và truyền danh sách sản phẩm đã chọn
-    navigate("/checkout", { state: { selectedProducts } });
-    // return <Navigate to="/checkout" selectedProducts={selectedProducts}/>
+    
   };
 
   useEffect(() => {
@@ -143,7 +150,7 @@ const CartView = (props) => {
   };
 
   if (userData == null) return <LogInRequired />;
-
+  
   return (
     <div>
       <div className="bg-secondary border-top p-4 text-white mb-3">
@@ -202,6 +209,7 @@ const CartView = (props) => {
                                   setSelectedColor={setSelectedColor}
                                   setFormAction={setFormAction}
                                   setNewProductQuantity={setNewProductQuantity}
+            
                                 />
                               ))
                           )}
@@ -209,9 +217,9 @@ const CartView = (props) => {
                       </table>
                     </div>
                     <div className="card-footer">
-                      <button className="btn btn-primary float-end" onClick={handleCheckout}>
+                      <Link className="btn btn-primary float-end" to="/checkout" state={{cartProducts:cartProducts}}>
                         Make Purchase <i className="bi bi-chevron-right"></i>
-                      </button>
+                      </Link>
                       <Link to="/" className="btn btn-secondary">
                         <i className="bi bi-chevron-left"></i> Continue shopping
                       </Link>
