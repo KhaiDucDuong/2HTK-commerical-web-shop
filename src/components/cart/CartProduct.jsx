@@ -4,48 +4,42 @@ import "./cart-product.css";
 
 const CartProduct = (props) => {
   const {
+    index,
     product,
     setSelectedProductId,
     setSelectedSize,
     setSelectedColor,
     setFormAction,
     setNewProductQuantity,
+    setSelectedProducts,
   } = props;
 
   const [productQuantity, setProductQuantity] = useState(product.quantity);
-  const [isChecked, setIsChecked] = useState(false);
-  const [selectedProducts, setSelectedProducts] = useState([]); // Khởi tạo selectedProducts là một mảng trống
 
   function currencyFormat(num) {
     return "$" + num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
   }
 
   const handleCheckboxChange = (e) => {
-    setIsChecked(e.target.checked);
-
-    if (isChecked) {
-      setSelectedProducts([...selectedProducts, product]);
+    if (e.target.checked) {
+      setSelectedProducts((oldArray) => [...oldArray, product]);
     } else {
-      setSelectedProducts(selectedProducts.filter((p) => p.id !== product.id));
+      setSelectedProducts((l) => l.filter((item) => item.id !== product.id));
     }
-    console.log(selectedProducts);
-
   };
 
   return (
     <tr>
       <td>
         <div className="row">
-          <div className="col-3 d-none d-md-block">
-            <img src={product.image} width="80" alt="..." />
+          <div
+            className="col-3 "
+            style={{ display: "flex", justifyContent: "center" }}
+          >
+            <img src={product.image} width="80" height="80" alt="..." />
           </div>
           <div className="col">
             <label>
-              <input
-                type="checkbox"
-                checked={isChecked}
-                onChange={handleCheckboxChange}
-              />
               <Link
                 to={`/product/detail?product=${product.id}`}
                 className="text-decoration-none"
@@ -98,6 +92,25 @@ const CartProduct = (props) => {
         </small>
       </td>
       <td className="text-end" style={{ minWidth: "150px" }}>
+        <button
+          style={{
+            border: "none",
+            background: "none",
+            cursor: "default",
+            marginRight: "8px",
+          }}
+        >
+          <input
+            clas
+            class="form-check-input"
+            type="checkbox"
+            value={0}
+            id={"product_" + 0}
+            onChange={handleCheckboxChange}
+            defaultChecked="true"
+          ></input>
+        </button>
+
         <button
           type="submit"
           className="btn btn-sm btn-outline-secondary me-2"
