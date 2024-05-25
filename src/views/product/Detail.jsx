@@ -82,7 +82,7 @@ function ProductDetailView(props) {
 
   return (
     <div className="container-fluid mt-3">
-      <h1>{shop._id === userShopId ? "OWNER" : "FOREIGNER"}</h1>
+      {/* <h1>{shop._id === userShopId ? "OWNER" : "FOREIGNER"}</h1> */}
       <div className="row">
         <div className="col-md-8">
           <div className="row mb-3">
