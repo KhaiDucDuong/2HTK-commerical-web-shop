@@ -24,7 +24,7 @@ const CartProduct = (props) => {
     if (e.target.checked) {
       setSelectedProducts((oldArray) => [...oldArray, product]);
     } else {
-      setSelectedProducts((l) => l.filter((item) => item.id !== product.id));
+      setSelectedProducts((l) => l.filter((item) => (item.id !== product.id || item.color !== product.color || item.size !== product.size)));
     }
   };
 
