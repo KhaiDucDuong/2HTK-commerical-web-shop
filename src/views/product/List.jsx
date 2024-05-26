@@ -82,16 +82,6 @@ function ProductListView(props) {
           selectedSize
         );
 
-        // console.log(
-        //   userData.userId +
-        //     " - " +
-        //     selectedProductId +
-        //     " - " +
-        //     selectedColor +
-        //     " - " +
-        //     selectedSize
-        // );
-
         if (responseData.status === 9999) {
           alert("Add product to cart successfully!");
         } else {

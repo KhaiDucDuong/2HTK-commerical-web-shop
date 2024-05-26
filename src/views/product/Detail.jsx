@@ -3,6 +3,7 @@ import { data } from "../../data";
 import { Link } from "react-router-dom";
 import {
   GetProductByID,
+  sendAddProductToCartRequest,
   sendUpdateProductImgRequest,
 } from "../../hooks/productApi";
 import { GetShopbyID, fetchUserShop } from "../../hooks/shopApi";
@@ -36,7 +37,8 @@ function ProductDetailView(props) {
   const [selectedVariationIndex, setSelectedVariationIndex] = useState(0);
   const [editingState, setEditingState] = useState(false);
   const [shopImgPath, setShopImagePath] = useState("../../images/NO_IMG.png");
-  const [selectedForm, setSelectedForm] = useState(); //UPDATE_PRODUCT_IMG & UPDATE_PRODUCT_INFO & ADD_PRODUCT_VARIATION
+  const [selectedForm, setSelectedForm] = useState(); //UPDATE_PRODUCT_IMG & UPDATE_PRODUCT_INFO & ADD_PRODUCT_VARIATION & ADD_PRODUCT_TO_CART & ADD_PRODUCT_TO_WISHLIST
+  const [productQuantity, setProductQuantity] = useState(1);
 
   useEffect(() => {
     const fetchShopName = async (ID) => {
@@ -106,6 +108,25 @@ function ProductDetailView(props) {
       } else alert(data.payload);
     } else if (selectedForm === "UPDATE_PRODUCT_INFO") {
     } else if (selectedForm === "ADD_PRODUCT_VARIATION") {
+    } else if (selectedForm === "ADD_PRODUCT_TO_CART") {
+      try {
+        const responseData = await sendAddProductToCartRequest(
+          userData.userId,
+          product._id,
+          productQuantity,
+          product.productVariations[selectedVariationIndex].color,
+          product.productVariations[selectedVariationIndex].size
+        );
+
+        if (responseData.status === 9999) {
+          alert("Add product to cart successfully!");
+        } else {
+          alert(responseData.payload);
+        }
+      } catch (e) {
+        alert("Falied to add product to cart!");
+      }
+    } else if (selectedForm === "ADD_PRODUCT_TO_WISHLIST") {
     }
   };
 
@@ -378,26 +399,36 @@ function ProductDetailView(props) {
                       <button
                         className="btn btn-primary text-white"
                         type="button"
+                        onClick={() => {
+                          if (productQuantity > 1)
+                            setProductQuantity(productQuantity - 1);
+                        }}
                       >
                         <i className="bi bi-dash-lg"></i>
                       </button>
                       <input
                         type="text"
                         className="form-control"
-                        defaultValue="1"
+                        value={productQuantity}
+                        onChange={(e) => setProductQuantity(e.target.value)}
                       />
                       <button
                         className="btn btn-primary text-white"
                         type="button"
+                        onClick={() => {
+                          if (productQuantity < 99)
+                            setProductQuantity(productQuantity + 1);
+                        }}
                       >
                         <i className="bi bi-plus-lg"></i>
                       </button>
                     </div>
                   </div>
                   <button
-                    type="button"
+                    type="submit"
                     className="btn btn-sm btn-primary me-2"
                     title="Add to cart"
+                    onClick={() => setSelectedForm("ADD_PRODUCT_TO_CART")}
                   >
                     <i className="bi bi-cart-plus me-1"></i>Add to cart
                   </button>
