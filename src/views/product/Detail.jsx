@@ -71,19 +71,19 @@ function ProductDetailView(props) {
     }
   }, [productID]);
 
-  if (!product || !product.productVariations) {
-    return (
-      <div className="loader-container">
-    <div>No product found</div>
-    </div>
-  );
-  }
   if (loading) {
     return (
       <div className="loader-container">
         <div className="loader"></div>
       </div>
     );
+  }
+  if (!product || !product.productVariations) {
+    return (
+      <div className="loader-container">
+    <div>No product found</div>
+    </div>
+  );
   }
 
   return (
@@ -108,7 +108,7 @@ function ProductDetailView(props) {
                 <p>
                   Shop:{" "}
                   <Link
-                    to={`/product/detail?product=${product._id}`}
+                    to={`/shop?id=${shop._id}`}
                     className="text-decoration-none"
                   >
                     {shop.name}
