@@ -198,7 +198,7 @@ function ProductDetailView(props) {
                       <p>
                         Shop:{" "}
                         <Link
-                          to={`/product/detail?product=${product._id}`}
+                          to={`/shop?id=${shop._id}`}
                           className="text-decoration-none"
                         >
                           {shop.name}
