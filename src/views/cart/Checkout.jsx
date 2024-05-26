@@ -74,7 +74,7 @@ const CheckoutView = () => {
 
   return (
     <div>
-      <p>{JSON.stringify(productList)}</p>
+      {/* <p>{JSON.stringify(productList)}</p> */}
       <div className="bg-secondary border-top p-4 text-white mb-3">
         <h1 className="display-6 text-center">Checkout</h1>
       </div>

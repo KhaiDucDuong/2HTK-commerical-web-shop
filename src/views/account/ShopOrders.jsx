@@ -1,15 +1,27 @@
-import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { lazy, useState, useEffect } from "react";
 import { AllOrdersBySellers } from "../../hooks/OrderApi";
+import { fetchUserShop } from "../../hooks/shopApi";
+const LogInRequired = lazy(() => import("../pages/LogInRequired"));
 
 const OrdersView = (props) => {
+  const location = useLocation();
+  const { shopData } = location.state || {};
+  const [userShop, setUserShop] = useState(shopData!== undefined ? shopData : null)
   const { userData } = props;
   const [orderProducts, setOrderProducts] = useState([]);
 
   useEffect(() => {
     const fetchOrders = async () => {
+      let shop = userShop;
+      if(shop === null){
+        shop = await fetchUserShopData()
+      }
+
       try {
-        const response = await AllOrdersBySellers("6648210594a14d0d75586fe9"); // Replace with actual userId or sellerId
+        console.log("2 " + shop)
+        const response = await AllOrdersBySellers(shop._id); // Replace with actual userId or sellerId
+        //console.log(userData.userId)
         setOrderProducts(response.payload); // Assuming `payload` contains the array of orders
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -18,6 +30,20 @@ const OrdersView = (props) => {
 
     fetchOrders();
   }, []);
+
+  const fetchUserShopData = async () => {
+    if (userData != null) {
+      const responseData = await fetchUserShop(userData.userId);
+      if (responseData.status === 9999) {
+        //setShopData(responseData.payload);
+        await setUserShop(responseData.payload);
+        //console.log("1 " + responseData.payload)
+        return responseData.payload
+        //console.log(data.payload);
+      }
+    }
+    return 1;
+  };
   
   const getStatus = (statetusType) => {
     switch (statetusType) {
@@ -34,10 +60,13 @@ const OrdersView = (props) => {
     }
   };
 
+  if (userData == null) return <LogInRequired />;
+
   return (
     <div className="container mb-3">
       <h4 className="my-3">Orders</h4>
       <div className="row g-3">
+        {orderProducts.length === 0 && <h3>You don't have any order yet</h3>}
         {Array.isArray(orderProducts) && orderProducts.map((order) => (
           <div className="col-md-6" key={order._id}>
             <div className="card">
