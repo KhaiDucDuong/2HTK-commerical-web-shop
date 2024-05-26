@@ -54,6 +54,7 @@ function ProductDetailView(props) {
     const fetchProduct = async (proID) => {
       let data = await GetProductByID(proID);
       setProduct(data);
+      if (data.productVariations){
       setSelectedVariation(
         data.productVariations[0].size + "_" + data.productVariations[0].color
       );
@@ -61,23 +62,28 @@ function ProductDetailView(props) {
         await fetchShopName(data.shopId.toString());
       }
       setLoading(false);
+    }
     };
 
     if (productID) {
       fetchProduct(productID);
-      fetchUseruserShopData();
+      // fetchUseruserShopData();
     }
   }, [productID]);
 
+  if (!product || !product.productVariations) {
+    return (
+      <div className="loader-container">
+    <div>No product found</div>
+    </div>
+  );
+  }
   if (loading) {
     return (
       <div className="loader-container">
         <div className="loader"></div>
       </div>
     );
-  }
-  if (!product || !product.productVariations) {
-    return <div>No product found</div>;
   }
 
   return (
