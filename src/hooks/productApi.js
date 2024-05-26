@@ -64,3 +64,36 @@ export async function GetProductByID(ID) {
     return [];
   }
 }
+
+export async function sendUpdateProductImgRequest(productId, color, size, productImgInputId) {
+  const formData = new FormData();
+  try {
+  const fileInput = document.querySelector("#" + productImgInputId);
+  // console.log(document.querySelector("#shopImageFileForm"))
+  // console.log(shopImageFile)
+  if (fileInput.files[0] == null) {
+    alert("Please upload an image!");
+    return;
+  }
+
+  formData.append("image", fileInput.files[0]);
+  formData.append("color", color);
+  formData.append("size", size);
+
+  // console.log(process.env.REACT_APP_UPDATE_SHOP_IMAGE_API + shopData._id)
+  // console.log(formData)
+  
+    const response = await fetch(
+      process.env.REACT_APP_UPDATE_PRODUCT_IMAGE + productId,
+      {
+        method: "PUT",
+        body: formData,
+      }
+    );
+
+    const data = await response.json();
+    return data;
+  } catch (e) {
+    alert("Failed to update shop image!");
+  }
+}
