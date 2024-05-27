@@ -12,8 +12,19 @@ const CheckoutView = () => {
   const [isProductIndexesSelected, setIsProductIndexesSelected] = useState(
     new Array(productList.length).fill(true)
   );
-  const [hasNewChange, setHasNewChange] = useState(false)
+  const [hasNewChange, setHasNewChange] = useState(false);
+  const [voucherData, setVoucherData] = useState();
+  const [productShopVouchers, setProductShopVouchers] = useState([]);
+  const [shippingVouchers, setShippingVouchers] = useState([]);
+  const [userInformation, setUserInformation] = useState();
+  const [selectedProductVoucher, setSelectedProductVoucher] = useState();
+  const [selectedShippingVoucher, setSelectedShippingVoucher] = useState();
+  const [approvedProductVoucher, setApprovedProductVoucher] = useState();
+  const [approvedShippingVoucher, setApprovedShippingVoucher] = useState();
+  const [shipAddress, setShipAddress] = useState("");
   const [shippingFee, setShippingFee] = useState(0);
+  const [shipFeeDiscount, setShipFeeDiscount] = useState(0);
+  const [productDiscount, setProductDiscount] = useState(0);
   const [totalPrice, setTotalPrice] = useState(() => {
     let sum = 0;
     productList.forEach((product, index) => {
@@ -21,11 +32,16 @@ const CheckoutView = () => {
         sum += product.price * product.quantity;
       }
     });
-    return sum;
+    return sum - shipFeeDiscount - productDiscount;
   });
 
   const [showVoucherWindow, setShowVoucherWindow] = useState(false);
   const voucherModalRef = useRef(null);
+
+  useEffect(() => {
+    getAllVouchers();
+    getUserInformation();
+  }, []);
 
   const handleCloseVoucherWindow = () => {
     setShowVoucherWindow(false);
@@ -49,11 +65,22 @@ const CheckoutView = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    let voucherList = [];
+    if (approvedProductVoucher != null) {
+      voucherList.push(approvedProductVoucher);
+    }
+
+    if (approvedShippingVoucher != null) {
+      voucherList.push(approvedShippingVoucher);
+    }
+
     const jsonData = JSON.stringify({
       selectedProductLists: productList,
-      voucherNames: [],
+      voucherNames: voucherList,
+      initialCost: totalPrice,
+      finalCost: shippingFee - shipFeeDiscount + (totalPrice - productDiscount),
     });
-    console.log(jsonData)
+    console.log(jsonData);
 
     try {
       const response = await fetchApi(
@@ -72,9 +99,128 @@ const CheckoutView = () => {
     }
   };
 
+  async function getAllVouchers() {
+    try {
+      const response = await fetchApi(
+        process.env.REACT_APP_GET_ALL_VOUCHERS,
+        "GET"
+      );
+
+      if (response.status === 200) {
+        const data = await response.json();
+        setVoucherData(data);
+        let sVouchers = [],
+          psVouchers = [];
+        data.forEach((voucher) => {
+          if (voucher.type === "shipping") {
+            sVouchers.push(voucher);
+          } else {
+            psVouchers.push(voucher);
+          }
+        });
+        setShippingVouchers(sVouchers);
+        setProductShopVouchers(psVouchers);
+        //console.log(data);
+        // alert("Create an order successfully!");
+        // navigate("/cart");
+      }
+      //else alert(data.payload);
+    } catch (e) {
+      //alert("Failed to create an order!");
+    }
+  }
+
+  async function getUserInformation() {
+    try {
+      const response = await fetchApi(
+        process.env.REACT_APP_GET_USER_INFORMATION_API + userData.userId,
+        "GET"
+      );
+
+      const data = await response.json();
+      if (data.status === 9999) {
+        setUserInformation(data.payload);
+        if (data.payload.address != null) {
+          setShipAddress(data.payload.address);
+          getShippingFee(data.payload.address);
+        }
+        //console.log(data.payload);
+        // alert("Create an order successfully!");
+        // navigate("/cart");
+      }
+      //else alert(data.payload);
+    } catch (e) {
+      //alert("Failed to create an order!");
+    }
+  }
+
+  async function getShippingFee(address = shipAddress) {
+    const jsonData = JSON.stringify({
+      selectedProductLists: productList,
+      voucherNames: [],
+      address: address,
+    });
+
+    try {
+      const response = await fetchApi(
+        process.env.REACT_APP_GET_ORDER_SHIPPING_FEE_API + userData.userId,
+        "POST",
+        jsonData
+      );
+
+      const data = await response.json();
+      if (data.status === 9999) {
+        setShippingFee(data.payload);
+      }
+      //else alert(data.payload);
+    } catch (e) {
+      //alert("Failed to create an order!");
+    }
+  }
+
+  async function sendApplyVoucherRequest(voucherName, type) {
+    if (shippingFee <= 0) {
+      alert("Enter a valid delivery address first!");
+      return;
+    }
+
+    const jsonData = JSON.stringify({
+      selectedProductLists: productList,
+      voucherNames: [voucherName],
+      initialCost: totalPrice,
+      shippingFee: shippingFee,
+    });
+
+    try {
+      const response = await fetchApi(
+        process.env.REACT_APP_APPLY_VOUCHER_API + userData.userId,
+        "POST",
+        jsonData
+      );
+
+      const data = await response.json();
+      if (data.status === 9999) {
+        if (type === "shipping") {
+          setShipFeeDiscount(
+            shippingFee - (data.payload.total - data.payload.subtotal)
+          );
+          setApprovedShippingVoucher(voucherName);
+        } else {
+          setProductDiscount(data.payload.total - data.payload.subtotal);
+          setApprovedProductVoucher(voucherName);
+        }
+        alert("Apply voucher successfully");
+      } else {
+        alert("Can't use this voucher");
+      }
+    } catch (e) {
+      alert("Can't use this voucher");
+    }
+  }
+
   return (
     <div>
-      {/* <p>{JSON.stringify(productList)}</p> */}
+      <p>{JSON.stringify(productList)}</p>
       <div className="bg-secondary border-top p-4 text-white mb-3">
         <h1 className="display-6 text-center">Checkout</h1>
       </div>
@@ -155,6 +301,15 @@ const CheckoutView = () => {
                     className="text-end mb-1"
                     style={{ display: "flex", justifyContent: "space-between" }}
                   >
+                    <span style={{ marginRight: "1em" }}>Initial total: </span>
+                    <span style={{ fontWeight: "bold" }}>
+                      {currencyFormat(totalPrice)}
+                    </span>
+                  </div>
+                  <div
+                    className="text-end mb-1"
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                  >
                     <span style={{ marginRight: "1em" }}>Ship fee: </span>
                     <span style={{ fontWeight: "bold" }}>
                       {currencyFormat(shippingFee)}
@@ -164,9 +319,11 @@ const CheckoutView = () => {
                     className="text-end mb-1"
                     style={{ display: "flex", justifyContent: "space-between" }}
                   >
-                    <span style={{ marginRight: "1em" }}>Total: </span>
+                    <span style={{ marginRight: "1em" }}>
+                      Ship fee discount:{" "}
+                    </span>
                     <span style={{ fontWeight: "bold" }}>
-                      {currencyFormat(totalPrice)}
+                      {currencyFormat(shipFeeDiscount)}
                     </span>
                   </div>
                   <div
@@ -174,10 +331,23 @@ const CheckoutView = () => {
                     style={{ display: "flex", justifyContent: "space-between" }}
                   >
                     <span style={{ marginRight: "1em" }}>
-                      Total with ship:{" "}
+                      Product discount:{" "}
                     </span>
                     <span style={{ fontWeight: "bold" }}>
-                      {currencyFormat(shippingFee + totalPrice)}
+                      {currencyFormat(productDiscount)}
+                    </span>
+                  </div>
+                  <div
+                    className="text-end mb-1"
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <span style={{ marginRight: "1em" }}>Final Total: </span>
+                    <span style={{ fontWeight: "bold" }}>
+                      {currencyFormat(
+                        shippingFee -
+                          shipFeeDiscount +
+                          (totalPrice - productDiscount)
+                      )}
                     </span>
                   </div>
                 </div>
@@ -191,16 +361,122 @@ const CheckoutView = () => {
                       <input
                         type="text"
                         className="form-control"
-                        placeholder="Address"
-                        disabled
+                        defaultValue={shipAddress}
+                        onChange={(e) => setShipAddress(e.target.value)}
                       />
                     </div>
                     <div className="col-md-12">
-                      <button onClick={handleShowModal}>Chọn voucher</button>
-                      <VoucherModal
-                        ref={voucherModalRef}
-                        onClose={handleCloseVoucherWindow}
-                      />
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={() => {
+                          console.log(shipAddress);
+                          getShippingFee(shipAddress);
+                        }}
+                      >
+                        Update shipping address
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="card mb-3">
+                <div className="card-header">Vouchers</div>
+                <div className="card-body">
+                  <div className="row">
+                    <div className="col-md-6 col-12 mb-3">
+                      <div className="row g-3">
+                        <div className="col-md-12 form-group">
+                          <label
+                            for="productShopVoucher"
+                            style={{ marginBottom: "0.5em" }}
+                          >
+                            Product/Shop voucher
+                          </label>
+                          <select
+                            class="form-control"
+                            id="productShopVoucher"
+                            onChange={(e) =>
+                              setSelectedProductVoucher(e.target.value)
+                            }
+                          >
+                            <option></option>
+                            {productShopVouchers.map((voucher) => {
+                              return (
+                                <option value={voucher.name}>
+                                  {voucher.name +
+                                    " - " +
+                                    voucher.monetaryValue * 100 +
+                                    "% off"}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+                        <div className="col-md-12">
+                          <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={() => {
+                              console.log(selectedProductVoucher);
+                              sendApplyVoucherRequest(
+                                selectedProductVoucher,
+                                "product"
+                              );
+                            }}
+                          >
+                            Apply voucher
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-6 col-12 mb-2">
+                      <div className="row g-3">
+                        <div className="col-md-12 form-group">
+                          <label
+                            for="productShopVoucher"
+                            style={{ marginBottom: "0.5em" }}
+                          >
+                            Shipping voucher
+                          </label>
+                          <select
+                            class="form-control"
+                            id="shippingVoucher"
+                            onChange={(e) => {
+                              setSelectedShippingVoucher(e.target.value);
+                              //console.log(e.target.value);
+                            }}
+                          >
+                            <option></option>
+                            {shippingVouchers.map((voucher) => {
+                              return (
+                                <option value={voucher.name}>
+                                  {voucher.name +
+                                    " - " +
+                                    voucher.monetaryValue * 100 +
+                                    "% off"}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+                        <div className="col-md-12">
+                          <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={() => {
+                              console.log(selectedShippingVoucher);
+                              sendApplyVoucherRequest(
+                                selectedShippingVoucher,
+                                "shipping"
+                              );
+                            }}
+                          >
+                            Apply voucher
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
