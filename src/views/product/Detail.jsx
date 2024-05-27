@@ -1,6 +1,7 @@
 import { lazy, useState, useEffect } from "react";
 import { data } from "../../data";
 import { Link } from "react-router-dom";
+import { fetchApi } from "../../hooks/useFetch";
 import {
   GetProductByID,
   sendAddProductToCartRequest,
@@ -8,6 +9,8 @@ import {
 } from "../../hooks/productApi";
 import { GetShopbyID, fetchUserShop } from "../../hooks/shopApi";
 import "../../App.css";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 const CardFeaturedProduct = lazy(() =>
   import("../../components/card/CardFeaturedProduct")
 );
@@ -39,6 +42,11 @@ function ProductDetailView(props) {
   const [shopImgPath, setShopImagePath] = useState("../../images/NO_IMG.png");
   const [selectedForm, setSelectedForm] = useState(); //UPDATE_PRODUCT_IMG & UPDATE_PRODUCT_INFO & ADD_PRODUCT_VARIATION & ADD_PRODUCT_TO_CART & ADD_PRODUCT_TO_WISHLIST
   const [productQuantity, setProductQuantity] = useState(1);
+  const [show, setShow] = useState(false);
+  const [newColor, setNewColor] = useState("");
+  const [newSize, setNewSize] = useState("");
+  const [newRemainingQuantity, setNewRemainingQuantity] = useState(0);
+  const [newPrice, setNewPrice] = useState(0);
 
   useEffect(() => {
     const fetchShopName = async (ID) => {
@@ -51,7 +59,7 @@ function ProductDetailView(props) {
         const responseData = await fetchUserShop(userData.userId);
         if (responseData.status === 9999) {
           setUserShopId(responseData.payload._id);
-          console.log(responseData.payload)
+          console.log(responseData.payload);
           //setUserShop(responseData.payload);
           //console.log(data.payload);
         }
@@ -63,20 +71,20 @@ function ProductDetailView(props) {
     const fetchProduct = async (proID) => {
       let data = await GetProductByID(proID);
       setProduct(data);
-      if (data.productVariations){
-      setSelectedVariation(
-        data.productVariations[0].size + "_" + data.productVariations[0].color
-      );
-      setShopImagePath(
-        data.productVariations[selectedVariationIndex].image
-          ? data.productVariations[selectedVariationIndex].image
-          : "../../images/NO_IMG.png"
-      );
-      if (data && data.shopId) {
-        await fetchShopName(data.shopId.toString());
+      if (data.productVariations) {
+        setSelectedVariation(
+          data.productVariations[0].size + "_" + data.productVariations[0].color
+        );
+        setShopImagePath(
+          data.productVariations[selectedVariationIndex].image
+            ? data.productVariations[selectedVariationIndex].image
+            : "../../images/NO_IMG.png"
+        );
+        if (data && data.shopId) {
+          await fetchShopName(data.shopId.toString());
+        }
+        setLoading(false);
       }
-      setLoading(false);
-    }
     };
 
     if (productID) {
@@ -95,9 +103,9 @@ function ProductDetailView(props) {
   if (!product || !product.productVariations) {
     return (
       <div className="loader-container">
-    <div>No product found</div>
-    </div>
-  );
+        <div>No product found</div>
+      </div>
+    );
   }
 
   const onSubmit = async (e) => {
@@ -112,7 +120,7 @@ function ProductDetailView(props) {
       if (responseData.status === 9999) {
         setProduct(responseData.payload);
         alert("Product image has been updated!");
-      } else alert(data.payload);
+      } else alert("Image must be less than 2mbs and in these format: jpg, jpeg, png");
     } else if (selectedForm === "UPDATE_PRODUCT_INFO") {
     } else if (selectedForm === "ADD_PRODUCT_VARIATION") {
     } else if (selectedForm === "ADD_PRODUCT_TO_CART") {
@@ -145,8 +153,109 @@ function ProductDetailView(props) {
     }
   }
 
+  const onAddVariationFormSubmit = async (e) => {
+    e.preventDefault();
+    const jsonData = JSON.stringify({
+      color: newColor,
+      size: newSize,
+      remainQuantity: newRemainingQuantity,
+      price: newPrice,
+    });
+
+    //console.log(jsonData);
+
+    try {
+      const response = await fetchApi(
+        process.env.REACT_APP_CREATE_PRODUCT_VARIATION_API + product._id,
+        "POST",
+        jsonData
+      );
+
+      const data = await response.json();
+      if (data.status === 9999) {
+        setProduct(data.payload)
+        alert("Add new variation successfully!");
+      } else {
+        alert(data.payload);
+      }
+    } catch (e) {
+      alert("Falied to add new variation!");
+    }
+  };
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   return (
     <div className="container-fluid mt-3">
+      <Modal show={show} onHide={handleClose}>
+        <form onSubmit={onAddVariationFormSubmit}>
+          <Modal.Header closeButton>
+            <Modal.Title>Add Product Variation</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div class="mb-3">
+              <label for="colorInput" class="form-label">
+                Color
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                id="colorInput"
+                placeholder="Your new product color (leave empty if none)"
+                onChange={(e) => setNewColor(e.target.value)}
+              />
+            </div>
+            <div class="mb-3">
+              <label for="sizeInput" class="form-label">
+                Size
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                id="sizeInput"
+                placeholder="Your new product size (leave empty if none)"
+                onChange={(e) => setNewSize(e.target.value)}
+              />
+            </div>
+            <div class="mb-3">
+              <label for="remainQuantityInput" class="form-label">
+                Remaining Quantity
+              </label>
+              <input
+                type="number"
+                class="form-control"
+                id="remainQuantityInput"
+                placeholder="Your new product quantity"
+                required="true"
+                onChange={(e) => setNewRemainingQuantity(e.target.value)}
+              />
+            </div>
+            <div class="mb-3">
+              <label for="priceInput" class="form-label">
+                Price
+              </label>
+              <input
+                type="number"
+                class="form-control"
+                id="priceInput"
+                placeholder="Your new product price"
+                required="true"
+                onChange={(e) => setNewPrice(e.target.value)}
+              />
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button type="submit" variant="primary" onClick={handleClose}>
+              Add
+            </Button>
+          </Modal.Footer>
+        </form>
+      </Modal>
+
       {/* <h1>{JSON.stringify(product)}</h1> */}
       {/* <h1>{shop._id === userShopId ? "OWNER" : "FOREIGNER"}</h1> */}
       <div className="row">
@@ -274,6 +383,14 @@ function ProductDetailView(props) {
                           onClick={() => setEditingState(true)}
                         >
                           Edit
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-primary mt-2"
+                          style={{ width: "100%" }}
+                          onClick={() => setShow(true)}
+                        >
+                          Add Variation
                         </button>
                       </>
                     )}

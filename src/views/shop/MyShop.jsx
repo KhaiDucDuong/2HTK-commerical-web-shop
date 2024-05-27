@@ -56,9 +56,11 @@ const MyShopView = (props) => {
       const data = await response.json();
 
       if (data.status === 9999) {
-        setShopData(data.payload);
+        //setShopData(data.payload);
         alert("Shop image has been updated!");
-      } else alert(data.payload);
+      } else {
+        alert(data.payload);
+      }
     } catch (e) {
       alert("Failed to update shop image!");
     }
@@ -162,6 +164,7 @@ const MyShopView = (props) => {
               setEditingState={setEditingState}
               setSelectedForm={setSelectedForm}
               setFormData={setFormData}
+              noProduct={shopData.products.length}
             />{" "}
           </div>
 

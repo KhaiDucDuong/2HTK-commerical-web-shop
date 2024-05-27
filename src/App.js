@@ -17,6 +17,7 @@ const SignInView = lazy(() => import("./views/account/SignIn"));
 const SignUpView = lazy(() => import("./views/account/SignUp"));
 const ForgotPasswordView = lazy(() => import("./views/account/ForgotPassword"));
 const ShopOrdersView = lazy(() => import("./views/account/ShopOrders"));
+const MyOrdersView = lazy(()  => import("./views/account/MyOrders"))
 const WishlistView = lazy(() => import("./views/account/Wishlist"));
 const NotificationView = lazy(() => import("./views/account/Notification"));
 const MyProfileView = lazy(() => import("./views/account/MyProfile"));
@@ -98,6 +99,7 @@ function App() {
                 element={<AddProductView userData={user} userShop={userShop} />}
               />
               <Route exact path="/account/shop/orders" element={<ShopOrdersView userData={user} />} />
+              <Route exact path="/account/orders" element={<MyOrdersView userData={user} />} />
               <Route
                 exact
                 path="/account/wishlist"
