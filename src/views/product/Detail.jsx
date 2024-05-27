@@ -80,7 +80,7 @@ function ProductDetailView(props) {
 
     if (productID) {
       fetchProduct(productID);
-      // fetchUseruserShopData();
+      fetchUseruserShopData();
     }
   }, [productID]);
 
