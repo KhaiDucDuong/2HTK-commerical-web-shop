@@ -68,7 +68,9 @@ class HomeView extends Component {
         <Card.Text>${product.productVariations[0].price}</Card.Text>
       </div>
       <div>
+      <Link to={`/product/detail?product=${product._id}`} reloadDocument className="text-decoration-none">
         <Button variant="primary" style={{ marginTop: 'auto' }}>Buy Now</Button> <span className="badge bg-success me-2">New</span>
+        </Link>
       </div>
     </Card.Body>
   </Card>
@@ -82,7 +84,9 @@ class HomeView extends Component {
             <Card.Text>${product.productVariations[0].price}</Card.Text>
           </div>
           <div>
+          <Link to={`/product/detail?product=${product._id}`} reloadDocument className="text-decoration-none">
             <Button variant="primary" style={{ marginTop: 'auto' }}>Buy Now</Button> 
+            </Link>
           </div>
         </Card.Body>
       </Card>
