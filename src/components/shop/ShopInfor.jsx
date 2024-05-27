@@ -13,6 +13,7 @@ const ShopInfor = (props) => {
     setEditingState,
     setSelectedForm,
     setFormData,
+    noProduct
   } = props;
   const [selectedImgFile, setSelectedImgFile] = useState();
   const [shopNameForm, setShopNameForm] = useState(shopData.name);
@@ -36,8 +37,8 @@ const ShopInfor = (props) => {
   return (
     <form onSubmit={onSubmit}>
       <div className="row m-2">
-        <div className="col-11">
-          <table className="table table-bordered" style={{ width: "60vw" }}>
+        <div className="col-10" style={{minWidth: "60vw"}}>
+          <table className="table table-bordered">
             <tr>
               <td
                 className="col-xs-4 user-img"
@@ -210,19 +211,19 @@ const ShopInfor = (props) => {
                 style={{ borderBottom: "none" }}
               >
                 <div className="">
-                  <span className="user-records">Products: 69</span>
+                  <span className="user-records">Products: {noProduct}</span>
                 </div>
               </td>
             </tr>
           </table>
         </div>
-        <div className="col-1">
+        <div className="col-1" style={{minWidth: "10vw"}}>
           {editingState ? (
             <>
               <button
                 type="button"
                 className="btn btn-sm btn-danger mt-2"
-                style={{width: "75px"}}
+                style={{width: "100px"}}
                 onClick={() => setEditingState(false)}
               >
                 Cancel
@@ -230,7 +231,7 @@ const ShopInfor = (props) => {
               <button
                 type="submit"
                 className="btn btn-sm btn-success mt-2"
-                style={{width: "75px"}}
+                style={{width: "100px"}}
                 onClick={() => {
                   setSelectedForm("SHOP_INFO");
                   setFormData([
@@ -260,6 +261,17 @@ const ShopInfor = (props) => {
                 to="/account/shop/new"
               >
                 Add Product
+              </Link>
+              <Link
+                type="button"
+                className="btn btn-sm btn-primary mt-2"
+                style={{width: "100px"}}
+                to="/account/shop/orders"
+                state={{
+                  shopData: shopData,
+                }}
+              >
+                View Orders
               </Link>
             </>
           )}

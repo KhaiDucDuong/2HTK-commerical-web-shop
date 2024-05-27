@@ -16,7 +16,8 @@ const HomeView = lazy(() => import("./views/Home"));
 const SignInView = lazy(() => import("./views/account/SignIn"));
 const SignUpView = lazy(() => import("./views/account/SignUp"));
 const ForgotPasswordView = lazy(() => import("./views/account/ForgotPassword"));
-const OrdersView = lazy(() => import("./views/account/Orders"));
+const ShopOrdersView = lazy(() => import("./views/account/ShopOrders"));
+const MyOrdersView = lazy(()  => import("./views/account/MyOrders"))
 const WishlistView = lazy(() => import("./views/account/Wishlist"));
 const NotificationView = lazy(() => import("./views/account/Notification"));
 const MyProfileView = lazy(() => import("./views/account/MyProfile"));
@@ -43,6 +44,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [userShop, setUserShop] = useState();
   const [isLoading, setIsLoading] = useState(true);
+  //console.log(userShop)
   useEffect(() => {
     const loggedInUser = localStorage.getItem("user");
     if (loggedInUser) {
@@ -96,7 +98,8 @@ function App() {
                 path="/account/shop/new"
                 element={<AddProductView userData={user} userShop={userShop} />}
               />
-              <Route exact path="/account/orders" element={<OrdersView />} />
+              <Route exact path="/account/shop/orders" element={<ShopOrdersView userData={user} />} />
+              <Route exact path="/account/orders" element={<MyOrdersView userData={user} />} />
               <Route
                 exact
                 path="/account/wishlist"
@@ -130,7 +133,7 @@ function App() {
                 path="/cart"
                 element={<CartView userData={user} />}
               />
-              <Route exact path="/checkout" element={<CheckoutView />} />
+              <Route exact path="/checkout" element={<CheckoutView />}/>
               <Route exact path="/invoice" element={<InvoiceView />} />
               <Route
                 exact

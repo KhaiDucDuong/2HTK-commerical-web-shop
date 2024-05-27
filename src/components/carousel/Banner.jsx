@@ -31,11 +31,6 @@ const Banner = (props) => {
       data-bs-ride="carousel"
       style={{ minHeight: 100 }}
     >
-      <ol className="carousel-indicators">
-        {props.data.map((item, index) => (
-          <Indicator item={props.id} index={index} key={index} />
-        ))}
-      </ol>
       <div className="carousel-inner">
         {props.data.map((item, index) => (
           <Item item={item} index={index} key={index} />
@@ -48,7 +43,7 @@ const Banner = (props) => {
         data-bs-slide="prev"
       >
         <span className="carousel-control-prev-icon" aria-hidden="true" />
-        <span className="sr-only">Previous</span>
+        <span className="sr-only"></span>
       </a>
       <a
         className="carousel-control-next"
@@ -57,7 +52,7 @@ const Banner = (props) => {
         data-bs-slide="next"
       >
         <span className="carousel-control-next-icon" aria-hidden="true" />
-        <span className="sr-only">Next</span>
+        <span className="sr-only"></span>
       </a>
     </div>
   );

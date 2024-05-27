@@ -1,8 +1,9 @@
-import { lazy, useEffect, useState } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import CartProduct from "../../components/cart/CartProduct";
 import { fetchApi } from "../../hooks/useFetch";
 import LogInRequired from "../pages/LogInRequired";
+import { useNavigate, Navigate } from "react-router-dom";
 const CouponApplyForm = lazy(() =>
   import("../../components/others/CouponApplyForm")
 );
@@ -15,10 +16,23 @@ const CartView = (props) => {
   const [selectedProductId, setSelectedProductId] = useState();
   const [selectedSize, setSelectedSize] = useState();
   const [selectedColor, setSelectedColor] = useState();
-  const [newProductQuantity, setNewProductQuantity] = useState()
+  const [newProductQuantity, setNewProductQuantity] = useState();
   const [formAction, setFormAction] = useState();
+  const [selectedProducts, setSelectedProducts] = useState([]);
   const onSubmitApplyCouponCode = async (values) => {
     alert(JSON.stringify(values));
+  };
+  const [form, setForm] = useState({
+    productId: "",
+    quantity: "",
+    color: "",
+    size: "",
+  });
+
+  const navigate = useNavigate();
+
+  const handleCheckout = () => {
+    // Chuyển hướng đến trang thanh toán và truyền danh sách sản phẩm đã chọn
   };
 
   useEffect(() => {
@@ -81,6 +95,7 @@ const CartView = (props) => {
       if (data.status === 9999) {
         setcartId(data.payload.id);
         setCartProducts(data.payload.cart_products);
+        setSelectedProducts(data.payload.cart_products);
         //console.log(data);
       }
       setIsLoading(false);
@@ -184,26 +199,38 @@ const CartView = (props) => {
                               Your cart is empty
                             </h3>
                           ) : (
-                            <>
-                              {cartProducts.map((product) => (
-                                <CartProduct
-                                  product={product}
-                                  setSelectedProductId={setSelectedProductId}
-                                  setSelectedSize={setSelectedSize}
-                                  setSelectedColor={setSelectedColor}
-                                  setFormAction={setFormAction}
-                                  setNewProductQuantity={setNewProductQuantity}
-                                />
-                              ))}
-                            </>
+                            cartProducts.map((product, index) => (
+                              <CartProduct
+                                key={product.id}
+                                index={index}
+                                product={product}
+                                setSelectedProductId={setSelectedProductId}
+                                setSelectedSize={setSelectedSize}
+                                setSelectedColor={setSelectedColor}
+                                setFormAction={setFormAction}
+                                setNewProductQuantity={setNewProductQuantity}
+                                selectedProducts={selectedProducts}
+                                setSelectedProducts={setSelectedProducts}
+                              />
+                            ))
                           )}
                         </tbody>
                       </table>
                     </div>
                     <div className="card-footer">
                       <Link
-                        to="/checkout"
                         className="btn btn-primary float-end"
+                        to="/checkout"
+                        state={{
+                          cartProducts: selectedProducts,
+                          userData: userData,
+                          // .forEach(
+                          //   (product, i) => {
+                          //     if(selectedProducts[i])
+                          //       return product;
+                          //   }
+                          // )
+                        }}
                       >
                         Make Purchase <i className="bi bi-chevron-right"></i>
                       </Link>

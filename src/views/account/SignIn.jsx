@@ -6,7 +6,6 @@ const SignInForm = lazy(() => import("../../components/account/SignInForm"));
 const SignInView = ({setUser}) => {
   const navigate = useNavigate();
   const [loginFail, setLoginFail] = useState(false)
-
   const onSubmit = async (values) => {
     const jsonData = JSON.stringify({
       username: values.username,

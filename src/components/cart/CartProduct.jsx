@@ -1,15 +1,17 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./cart-product.css";
-import { useState } from "react";
 
 const CartProduct = (props) => {
   const {
+    index,
     product,
     setSelectedProductId,
     setSelectedSize,
     setSelectedColor,
     setFormAction,
-    setNewProductQuantity
+    setNewProductQuantity,
+    setSelectedProducts,
   } = props;
 
   const [productQuantity, setProductQuantity] = useState(product.quantity);
@@ -17,17 +19,34 @@ const CartProduct = (props) => {
   function currencyFormat(num) {
     return "$" + num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
   }
+
+  const handleCheckboxChange = (e) => {
+    if (e.target.checked) {
+      setSelectedProducts((oldArray) => [...oldArray, product]);
+    } else {
+      setSelectedProducts((l) => l.filter((item) => (item.id !== product.id || item.color !== product.color || item.size !== product.size)));
+    }
+  };
+
   return (
     <tr>
       <td>
         <div className="row">
-          <div className="col-3 d-none d-md-block">
-            <img src={product.image} width="80" alt="..." />
+          <div
+            className="col-3 "
+            style={{ display: "flex", justifyContent: "center" }}
+          >
+            <img src={product.image} width="80" height="80" alt="..." />
           </div>
           <div className="col">
-            <Link to={`/product/detail?product=${product.id}`} className="text-decoration-none">
-              {product.name}
-            </Link>
+            <label>
+              <Link
+                to={`/product/detail?product=${product.id}`}
+                className="text-decoration-none"
+              >
+                {product.name}
+              </Link>
+            </label>
             <p className="small text-muted">
               Size: {product.size}, Color: {product.color}, Brand: {"..."}
             </p>
@@ -74,16 +93,24 @@ const CartProduct = (props) => {
       </td>
       <td className="text-end" style={{ minWidth: "150px" }}>
         <button
-          type="button"
-          className="btn btn-sm me-2 btn-outline-primary same-background-forever"
+          style={{
+            border: "none",
+            background: "none",
+            cursor: "default",
+            marginRight: "8px",
+          }}
         >
           <input
-            class="form-check-input select-product-input"
+            clas
+            class="form-check-input"
             type="checkbox"
+            value={0}
+            id={"product_" + 0}
+            onChange={handleCheckboxChange}
             defaultChecked="true"
-            id="product-check-box"
-          />
+          ></input>
         </button>
+
         <button
           type="submit"
           className="btn btn-sm btn-outline-secondary me-2"
@@ -92,7 +119,7 @@ const CartProduct = (props) => {
             setSelectedProductId(product.id);
             setSelectedColor(product.color);
             setSelectedSize(product.size);
-            setNewProductQuantity(productQuantity)
+            setNewProductQuantity(productQuantity);
           }}
         >
           Save

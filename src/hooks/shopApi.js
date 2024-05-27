@@ -25,3 +25,9 @@ export async function fetchUserShop(userId) {
   const data = await response.json();
   return data;
 }
+
+export async function GetShopDetailbyID(ID) {
+  let url = `http://localhost:8080/api/shops/getShopDetails/` + ID;
+  const Shop = await fetchData(url);
+  return Shop;
+}

@@ -45,7 +45,7 @@ function ShopProduct(props) {
           }}
         >
           <Card.Text style={{ fontStyle: "italic", marginBottom: "5px" }}>
-            {product.productVariations[0].price}
+            ${product.productVariations[0].price}
           </Card.Text>
           {/* <Button variant="primary">View Product</Button> */}
           <Link
