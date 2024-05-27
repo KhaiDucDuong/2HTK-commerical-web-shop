@@ -12,18 +12,18 @@ async function fetchData(url) {
 }
 
 export async function AllProducts() {
-  let url = `http://localhost:8080/api/products/category`;
+  let url = `http://3.147.78.250:8080/api/products/category`;
   const productList = await fetchData(url);
   return productList;
 }
 
 export async function findProducts(name) {
-  let url = `http://localhost:8080/api/products/category?search=` + name;
+  let url = `http://3.147.78.250:8080/api/products/category?search=` + name;
   const productList = await fetchData(url);
   return productList;
 }
 export async function findProductsByCategory(ID) {
-  let url = `http://localhost:8080/api/products/category?ID=` + ID;
+  let url = `http://3.147.78.250:8080/api/products/category?ID=` + ID;
   const productList = await fetchData(url);
   return productList;
 }
@@ -54,7 +54,7 @@ export async function sendAddProductToCartRequest(
 }
 
 export async function GetProductByID(ID) {
-  let url = `http://localhost:8080/api/products/detail?product=` + ID;
+  let url = `http://3.147.78.250:8080/api/products/detail?product=` + ID;
   try {
   const product = await fetchData(url);
   return product;

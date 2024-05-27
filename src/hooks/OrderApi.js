@@ -10,13 +10,13 @@ async function fetchData(url) {
 }
 
 export async function AllOrdersBySellers(ID) {
-    let url = `http://localhost:8080/api/orders/getSellerOrder/` + ID;
+    let url = `http://3.147.78.250:8080/api/orders/getSellerOrder/` + ID;
     const orderListBySeller = await fetchData(url);
     return orderListBySeller;
 }
 
 export async function AllOrdersByUser(ID){
-    let url = `http://localhost:8080/api/orders/getUserOrder/` + ID;
+    let url = `http://3.147.78.250:8080/api/orders/getUserOrder/` + ID;
     const orderListBySeller = await fetchData(url);
     return orderListBySeller;
 }

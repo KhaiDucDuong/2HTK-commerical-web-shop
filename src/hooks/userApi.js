@@ -2,7 +2,7 @@ import { fetchApi } from "./useFetch";
 
 export async function fetchUserProfile(userId) {
   try { 
-    const response = await fetchApi(`http://localhost:8080/api/users/getUser/${userId}`, "GET");
+    const response = await fetchApi(`http://3.147.78.250:8080/api/users/getUser/${userId}`, "GET");
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
@@ -15,7 +15,7 @@ export async function fetchUserProfile(userId) {
 }
 export async function fetchUserProfileDOB(userId) {
   try { 
-    const response = await fetchApi(`http://localhost:8080/api/users/getDateOfBirth/${userId}`, "GET");
+    const response = await fetchApi(`http://3.147.78.250:8080/api/users/getDateOfBirth/${userId}`, "GET");
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
@@ -40,7 +40,7 @@ export async function updateUserProfile(userId, profileData) {
       formData.append("image", profileData.image);
     }
 
-    const response = await fetch(`http://localhost:8080/api/users/updateUserProfile/${userId}`, {
+    const response = await fetch(`http://3.147.78.250:8080/api/users/updateUserProfile/${userId}`, {
       method: "PUT",
       body: formData,
     });
