@@ -25,10 +25,38 @@ const ProfileForm = (props) => {
     submitFailed,
     onImageChange,
     imagePreview,
+    userProfile,
   } = props;
+
+  const handleSubmitWithDateConversion = (values) => {
+    // Kiểm tra xem values.dateOfBirth đã là một chuỗi chưa
+    const valuesWithConvertedDate = {
+      ...values,
+      dateOfBirth: typeof values.dateOfBirth === 'string' ? new Date(values.dateOfBirth).getTime() : values.dateOfBirth,
+    };
+  
+    // Kiểm tra và xử lý file input
+    const fileInput = document.querySelector('input[name="formFile"]');
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+      valuesWithConvertedDate.image = fileInput.files[0];
+    }
+  
+    onSubmit(valuesWithConvertedDate);
+  };
+  
+  // Parse timestamp to date string (yyyy-mm-dd) for input[type="date"]
+  const parseTimestampToDate = (timestamp) => {
+    if (!timestamp) return ""; // Handle case when timestamp is null or undefined
+    const date = new Date(timestamp);
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${year}-${month}-${day}`;
+  };
+
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(handleSubmitWithDateConversion)}
       className={`needs-validation ${submitFailed ? "was-validated" : ""}`}
       noValidate
     >
@@ -37,7 +65,7 @@ const ProfileForm = (props) => {
           <i className="bi bi-person-lines-fill" /> Profile Detail
         </h6>
         <img
-          src={imagePreview ? imagePreview : "../../images/NO_IMG.png"}
+          src={imagePreview ? imagePreview : "../../images/no-img.png"}
           alt=""
           className="card-img-top rounded-0 img-fluid bg-secondary"
         />
@@ -47,13 +75,13 @@ const ProfileForm = (props) => {
             component={renderFormFileInput}
             onImageChange={onImageChange}
             validate={[required]}
-            tips="You don't allow uploading a photo more than 2MB"
+            tips="You don't allow uploading a photo more than 5MB"
           />
         </div>
         <ul className="list-group list-group-flush">
           <li className="list-group-item">
             <Field
-              name="name"
+              name="fullName"
               type="text"
               component={renderFormGroupField}
               placeholder="Your name"
@@ -64,8 +92,8 @@ const ProfileForm = (props) => {
           </li>
           <li className="list-group-item">
             <Field
-              name="mobileNo"
-              type="number"
+              name="phoneNumber"
+              type="text"
               component={renderFormGroupField}
               placeholder="Mobile no without country code"
               icon={IconPhone}
@@ -88,10 +116,10 @@ const ProfileForm = (props) => {
           </li>
           <li className="list-group-item">
             <Field
-              name="location"
+              name="address"
               type="text"
               component={renderFormGroupField}
-              placeholder="Your location"
+              placeholder="Your address"
               icon={IconGeoAlt}
               validate={[required]}
               required={true}
@@ -99,7 +127,7 @@ const ProfileForm = (props) => {
           </li>
           <li className="list-group-item">
             <Field
-              name="dob"
+              name="dateOfBirth"
               type="date"
               component={renderFormGroupField}
               placeholder="Your birthdate"
@@ -112,7 +140,7 @@ const ProfileForm = (props) => {
         <div className="card-body">
           <button
             type="submit"
-            className="btn btn-primary  d-flex"
+            className="btn btn-primary d-flex"
             disabled={submitting}
           >
             Submit
@@ -126,5 +154,6 @@ const ProfileForm = (props) => {
 export default compose(
   reduxForm({
     form: "profile",
+    enableReinitialize: true, // Ensure the form reinitializes with new props
   })
 )(ProfileForm);
