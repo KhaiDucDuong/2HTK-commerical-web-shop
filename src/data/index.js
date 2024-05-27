@@ -23,7 +23,7 @@ export const data = {
     {
       to: "/product/detail",
       img: "IconLaptop",
-      title: "Laptop",
+      title: "Acer Laptop",
       text: " Upto 20% off",
       tips: "Sony, Dell, Lenovo",
       cssClass: "text-primary",
@@ -47,7 +47,7 @@ export const data = {
     {
       to: "/product/detail",
       img: "IconTv",
-      title: "TV",
+      title: "TV Sonic",
       text: " Upto 25% off",
       tips: "Sony, Dell, Lenovo",
       cssClass: "text-warning",

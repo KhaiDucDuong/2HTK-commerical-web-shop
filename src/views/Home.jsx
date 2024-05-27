@@ -9,6 +9,9 @@ import { ReactComponent as IconDisplay } from "bootstrap-icons/icons/display.svg
 import { ReactComponent as IconHdd } from "bootstrap-icons/icons/hdd.svg";
 import { ReactComponent as IconUpcScan } from "bootstrap-icons/icons/upc-scan.svg";
 import { ReactComponent as IconTools } from "bootstrap-icons/icons/tools.svg";
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import {AllProducts} from "../hooks/productApi";
 
 const Support = lazy(() => import("../components/Support"));
 const Banner = lazy(() => import("../components/carousel/Banner"));
@@ -31,35 +34,58 @@ class HomeView extends Component {
     IconUpcScan: IconUpcScan,
     IconTools: IconTools,
   };
+  constructor(props) {
+    super(props);
+    this.state = {
+      productList: [],
+    };
+  }
+
+  async componentDidMount() {
+    const products = await AllProducts();
+    this.setState({ productList: products });
+  }
+  getRandomProducts(products, num) {
+    const shuffled = [...products];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled.slice(0, num); 
+  }
 
   render() {
-    const iconProducts = data.iconProducts;
-    const rows = [...Array(Math.ceil(iconProducts.length / 4))];
-    // chunk the products into the array of rows
-    const productRows = rows.map((row, idx) =>
-      iconProducts.slice(idx * 4, idx * 4 + 4)
-    );
+    const { productList } = this.state;
+    const random3Products = this.getRandomProducts(productList, 3);
+    const firstFourProducts = productList.slice(0, 4);
     // map the rows as div.row
-    const carouselContent = productRows.map((row, idx) => (
-      <div className={`carousel-item ${idx === 0 ? "active" : ""}`} key={idx}>
-        <div className="row g-3">
-          {row.map((product, idx) => {
-            const ProductImage = this.components[product.img];
-            return (
-              <div key={idx} className="col-md-3">
-                <CardIcon
-                  title={product.title}
-                  text={product.text}
-                  tips={product.tips}
-                  to={product.to}
-                >
-                  <ProductImage className={product.cssClass} width="80" height="80" />
-                </CardIcon>
-              </div>
-            );
-          })}
-        </div>
+    const DealsOfTheDay = firstFourProducts.map((product, idx) => (
+      <Card style={{ width: '18rem',height: '23rem' }} key={idx}>
+      <Card.Img variant="top" src={`${product.productVariations[0].image}`} style={{ width: "100%",height: "200px", objectFit: "contain" }} />
+    <Card.Body style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+      <div>
+        <Card.Title>{product.name} </Card.Title> 
+        <Card.Text>${product.productVariations[0].price}</Card.Text>
       </div>
+      <div>
+        <Button variant="primary" style={{ marginTop: 'auto' }}>Buy Now</Button> <span className="badge bg-success me-2">New</span>
+      </div>
+    </Card.Body>
+  </Card>
+))
+     const carouselContent = random3Products.map((product, idx) => (
+      <Card style={{ width: '18rem',height: '23rem' }} key={idx}>
+          <Card.Img variant="top" src={`${product.productVariations[0].image}`} style={{ width: "100%",height: "200px", objectFit: "contain" }} />
+        <Card.Body style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+          <div>
+            <Card.Title>{product.name}</Card.Title>
+            <Card.Text>${product.productVariations[0].price}</Card.Text>
+          </div>
+          <div>
+            <Button variant="primary" style={{ marginTop: 'auto' }}>Buy Now</Button> 
+          </div>
+        </Card.Body>
+      </Card>
     ));
 
     return (
@@ -68,9 +94,10 @@ class HomeView extends Component {
         <div className="container-fluid bg-light mb-3">
           <div className="row g-3">
             <div className="col-md-9">
-              <Carousel id="elect-product-category" className="mb-3">
-                {carouselContent}
-              </Carousel>
+
+              <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+                                {carouselContent}
+                            </div>
               {/* <Support /> */}
             </div>
             <div className="col-md-3">
@@ -83,12 +110,12 @@ class HomeView extends Component {
           <div className="row">
             <div className="col-md-12">
               <CardDealsOfTheDay
-                endDate={Date.now() + 1000 * 60 * 60 * 14}
-                title="Deals of the Day"
-                to="/"
+                title="Best Sellers"
               >
-                <Carousel id="elect-product-category1">
-                  {carouselContent}
+                <Carousel >
+                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+                  {DealsOfTheDay}
+                  </div>
                 </Carousel>
               </CardDealsOfTheDay>
             </div>
