@@ -13,6 +13,7 @@ const ShopInfor = (props) => {
     setEditingState,
     setSelectedForm,
     setFormData,
+    noProduct
   } = props;
   const [selectedImgFile, setSelectedImgFile] = useState();
   const [shopNameForm, setShopNameForm] = useState(shopData.name);
@@ -210,7 +211,7 @@ const ShopInfor = (props) => {
                 style={{ borderBottom: "none" }}
               >
                 <div className="">
-                  <span className="user-records">Products: 69</span>
+                  <span className="user-records">Products: {noProduct}</span>
                 </div>
               </td>
             </tr>

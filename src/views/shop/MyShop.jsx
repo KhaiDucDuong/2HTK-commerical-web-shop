@@ -162,6 +162,7 @@ const MyShopView = (props) => {
               setEditingState={setEditingState}
               setSelectedForm={setSelectedForm}
               setFormData={setFormData}
+              noProduct={shopData.products.length}
             />{" "}
           </div>
 
