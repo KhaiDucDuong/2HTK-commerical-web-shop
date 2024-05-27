@@ -1,22 +1,22 @@
 export const data = {
   banner: [
     {
-      to: "/link",
-      img: "../../images/banner/Banner_2.webp",
-      title: "First slide label",
-      description: "Nulla vitae elit libero, a pharetra augue mollis interdum",
+      to: "/product/detail?product=664f6ee6ec148e7aa2dcd3db",
+      img: "../../images/banner/tivi.jpg",
+      title: "",
+      description: "",
     },
     {
-      to: "/link",
-      img: "../../images/banner/Banner_3.webp",
-      title: "Second slide label",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      to: "/product/detail?product=664c7a5416d187fe4fd9365d",
+      img: "../../images/banner/Laptop.jpg",
+      title: "",
+      description: "",
     },
     {
-      to: "/link",
-      img: "../../images/banner/Banner_1.webp",
-      title: "Third slide label",
-      description: " Praesent commodo cursus magna, vel scelerisque nisl.",
+      to: "/product/detail?product=664c770e16d187fe4fd93656",
+      img: "../../images/banner/jordan-2.webp",
+      title: "",
+      description: "",
     },
   ],
   iconProducts: [
