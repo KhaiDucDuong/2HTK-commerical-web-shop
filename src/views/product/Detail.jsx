@@ -51,6 +51,7 @@ function ProductDetailView(props) {
         const responseData = await fetchUserShop(userData.userId);
         if (responseData.status === 9999) {
           setUserShopId(responseData.payload._id);
+          console.log(responseData.payload)
           //setUserShop(responseData.payload);
           //console.log(data.payload);
         }

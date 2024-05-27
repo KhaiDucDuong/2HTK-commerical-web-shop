@@ -22,6 +22,7 @@ const CheckoutView = () => {
   const [approvedProductVoucher, setApprovedProductVoucher] = useState();
   const [approvedShippingVoucher, setApprovedShippingVoucher] = useState();
   const [shipAddress, setShipAddress] = useState("");
+  const [verifiedShipAddress, setVerifiedShipAddress] = useState();
   const [shippingFee, setShippingFee] = useState(0);
   const [shipFeeDiscount, setShipFeeDiscount] = useState(0);
   const [productDiscount, setProductDiscount] = useState(0);
@@ -63,9 +64,20 @@ const CheckoutView = () => {
     return "$" + num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
   }
 
+  // function vndToDollar(num){
+  //   console.log(Math.round((num / 25452) * 100) / 100)
+  //   return Math.round((num / 25452) * 100) / 100;
+  // }
+
   const onSubmit = async (e) => {
     e.preventDefault();
     let voucherList = [];
+    //can't create order if ship address is invalid
+    if (verifiedShipAddress === null) {
+      alert("Ship address is invalid");
+      return;
+    }
+
     if (approvedProductVoucher != null) {
       voucherList.push(approvedProductVoucher);
     }
@@ -79,6 +91,7 @@ const CheckoutView = () => {
       voucherNames: voucherList,
       initialCost: totalPrice,
       finalCost: shippingFee - shipFeeDiscount + (totalPrice - productDiscount),
+      fromAddress: shipAddress,
     });
     console.log(jsonData);
 
@@ -143,6 +156,7 @@ const CheckoutView = () => {
         if (data.payload.address != null) {
           setShipAddress(data.payload.address);
           getShippingFee(data.payload.address);
+          setVerifiedShipAddress(data.payload.address);
         }
         //console.log(data.payload);
         // alert("Create an order successfully!");
@@ -158,7 +172,7 @@ const CheckoutView = () => {
     const jsonData = JSON.stringify({
       selectedProductLists: productList,
       voucherNames: [],
-      address: address,
+      fromAddress: address,
     });
 
     try {
@@ -170,6 +184,7 @@ const CheckoutView = () => {
 
       const data = await response.json();
       if (data.status === 9999) {
+        //setShippingFee(vndToDollar(data.payload));
         setShippingFee(data.payload);
       }
       //else alert(data.payload);
@@ -179,8 +194,8 @@ const CheckoutView = () => {
   }
 
   async function sendApplyVoucherRequest(voucherName, type) {
-    if (shippingFee <= 0) {
-      alert("Enter a valid delivery address first!");
+    if (verifiedShipAddress === null) {
+      alert("Must have a valid ship address first!");
       return;
     }
 
@@ -220,7 +235,7 @@ const CheckoutView = () => {
 
   return (
     <div>
-      <p>{JSON.stringify(productList)}</p>
+      {/* <p>{JSON.stringify(productList)}</p> */}
       <div className="bg-secondary border-top p-4 text-white mb-3">
         <h1 className="display-6 text-center">Checkout</h1>
       </div>
