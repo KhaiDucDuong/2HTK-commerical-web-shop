@@ -14,3 +14,9 @@ export async function AllOrdersBySellers(ID) {
     const orderListBySeller = await fetchData(url);
     return orderListBySeller;
 }
+
+export async function AllOrdersByUser(ID){
+    let url = `http://localhost:8080/api/orders/getUserOrder/` + ID;
+    const orderListBySeller = await fetchData(url);
+    return orderListBySeller;
+}
