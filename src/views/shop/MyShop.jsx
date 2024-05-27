@@ -56,7 +56,7 @@ const MyShopView = (props) => {
       const data = await response.json();
 
       if (data.status === 9999) {
-        setShopData(data.payload);
+        //setShopData(data.payload);
         alert("Shop image has been updated!");
       } else alert(data.payload);
     } catch (e) {
