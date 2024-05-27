@@ -61,7 +61,11 @@ const CheckoutView = () => {
   };
 
   function currencyFormat(num) {
-    return "$" + num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+    return "$" + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+  }
+
+  function vndToUsa(num){
+    return num / 25452
   }
 
   // function vndToDollar(num){
@@ -155,7 +159,7 @@ const CheckoutView = () => {
         setUserInformation(data.payload);
         if (data.payload.address != null) {
           setShipAddress(data.payload.address);
-          getShippingFee(data.payload.address);
+          //getShippingFee(vndToUsa(data.payload.address));
           setVerifiedShipAddress(data.payload.address);
         }
         //console.log(data.payload);
@@ -185,7 +189,7 @@ const CheckoutView = () => {
       const data = await response.json();
       if (data.status === 9999) {
         //setShippingFee(vndToDollar(data.payload));
-        setShippingFee(data.payload);
+        setShippingFee(vndToUsa(data.payload));
       }
       //else alert(data.payload);
     } catch (e) {
@@ -221,7 +225,7 @@ const CheckoutView = () => {
           );
           setApprovedShippingVoucher(voucherName);
         } else {
-          setProductDiscount(data.payload.total - data.payload.subtotal);
+          setProductDiscount(data.payload.subtotal - data.payload.total);
           setApprovedProductVoucher(voucherName);
         }
         alert("Apply voucher successfully");
