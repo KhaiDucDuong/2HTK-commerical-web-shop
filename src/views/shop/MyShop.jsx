@@ -58,7 +58,9 @@ const MyShopView = (props) => {
       if (data.status === 9999) {
         //setShopData(data.payload);
         alert("Shop image has been updated!");
-      } else alert(data.payload);
+      } else {
+        alert(data.payload);
+      }
     } catch (e) {
       alert("Failed to update shop image!");
     }

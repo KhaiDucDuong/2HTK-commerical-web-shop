@@ -120,7 +120,7 @@ function ProductDetailView(props) {
       if (responseData.status === 9999) {
         setProduct(responseData.payload);
         alert("Product image has been updated!");
-      } else alert(data.payload);
+      } else alert("Image must be less than 2mbs and in these format: jpg, jpeg, png");
     } else if (selectedForm === "UPDATE_PRODUCT_INFO") {
     } else if (selectedForm === "ADD_PRODUCT_VARIATION") {
     } else if (selectedForm === "ADD_PRODUCT_TO_CART") {
