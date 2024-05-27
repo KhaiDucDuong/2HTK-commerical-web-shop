@@ -40,10 +40,7 @@ const Footer = () => {
             <div className="h6">Company Name</div>
             <hr />
             <p>
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard dummy text
-              ever since the 1500s, when an unknown printer took a galley of
-              type and scrambled it to make a type specimen book.
+            Group 4 Commercial Web Shop
             </p>
           </div>
           <div className="col-md-3 py-3">
@@ -51,44 +48,39 @@ const Footer = () => {
             <hr />
             <ul className="list-group list-group-flush">
               <li className="list-group-item bg-dark text-white border-light">
-                <Link
-                  to="/"
+                <a href="/category?ID=662f64b458a28c045a3ba9d3"
                   className="text-decoration-none text-white stretched-link"
                 >
-                  Electronics
-                </Link>
+                  Thời Trang Nam
+                </a>
               </li>
               <li className="list-group-item bg-dark text-white border-light">
-                <Link
-                  to="/"
+              <a href="/category?ID=662f64bb58a28c045a3ba9d4"
                   className="text-decoration-none text-white stretched-link"
                 >
-                  Mobiles
-                </Link>
+                  Thời Trang Nữ
+                </a>
               </li>
               <li className="list-group-item bg-dark text-white border-light">
-                <Link
-                  to="/"
+              <a href="/category?ID=662f647358a28c045a3ba9d2"
                   className="text-decoration-none text-white stretched-link"
                 >
-                  Car & bike
-                </Link>
+                  Điện Thoại & Phụ Kiện
+                </a>
               </li>
               <li className="list-group-item bg-dark text-white border-light">
-                <Link
-                  to="/"
+              <a href="/category?ID=662f64d658a28c045a3ba9d5"
                   className="text-decoration-none text-white stretched-link"
                 >
-                  Super Market
-                </Link>
+                  Mẹ & Bé
+                </a>
               </li>
               <li className="list-group-item bg-dark text-white border-light">
-                <Link
-                  to="/"
+              <a href="/category?ID=662f653d58a28c045a3ba9d7"
                   className="text-decoration-none text-white stretched-link"
                 >
-                  Travel Cards
-                </Link>
+                  Máy Tính & Laptop
+                  </a>
               </li>
             </ul>
           </div>
