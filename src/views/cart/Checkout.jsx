@@ -97,7 +97,7 @@ const CheckoutView = () => {
 
     try {
       const response = await fetchApi(
-        process.env.REACT_APP_CREATE_ORDER_API,
+        process.env.REACT_APP_CREATE_ORDER_API + userData.userId,
         "POST",
         jsonData,
         userData.userId
@@ -222,7 +222,7 @@ const CheckoutView = () => {
           );
           setApprovedShippingVoucher(voucherName);
         } else {
-          setProductDiscount(data.payload.total - data.payload.subtotal);
+          setProductDiscount(data.payload.subtotal - data.payload.total);
           setApprovedProductVoucher(voucherName);
         }
         alert("Apply voucher successfully");
