@@ -7,16 +7,18 @@ const LogInRequired = lazy(() => import("../pages/LogInRequired"));
 const MyOrdersView = (props) => {
   const { userData } = props;
   const [orders, setOrders] = useState([]);
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const fetchOrders = async () => {
       if (userData != null) {
         try {
           console.log("fetching")
-          const response = await AllOrdersByUser(userData.userId); // Replace with actual userId or sellerId
+          const response = await AllOrdersByUser(userData.token); // Replace with actual userId or sellerId
           //console.log(userData.userId)
           console.log(response.payload)
           setOrders(response.payload); // Assuming `payload` contains the array of orders
+          setIsLoading(false)
         } catch (error) {
           console.error("Error fetching orders:", error);
         }
@@ -46,6 +48,7 @@ const MyOrdersView = (props) => {
       <h4 className="my-3">Orders</h4>
       <div className="row g-3">
         {orders.length === 0 && <h3>You don't have any order yet</h3>}
+        
         {Array.isArray(orders) &&
           orders.map((order) => (
             <div className="col-md-6" key={order._id}>

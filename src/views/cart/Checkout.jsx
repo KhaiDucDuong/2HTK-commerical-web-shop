@@ -97,9 +97,10 @@ const CheckoutView = () => {
 
     try {
       const response = await fetchApi(
-        process.env.REACT_APP_CREATE_ORDER_API + userData.userId,
+        process.env.REACT_APP_CREATE_ORDER_API,
         "POST",
-        jsonData
+        jsonData,
+        userData.userId
       );
 
       const data = await response.json();
